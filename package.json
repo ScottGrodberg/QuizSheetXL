@@ -1,0 +1,18 @@
+{
+  "name": "quizFromGoogleSheets",
+  "version": "1.0.0",
+  "description": "Using discord.js and vscode\r https://www.youtube.com/watch?v=Q0JlD7gCZRs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
