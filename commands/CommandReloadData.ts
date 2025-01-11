@@ -2,6 +2,8 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Data } from "../Data";
 import { ICommand } from "./ICommand";
 
+const request = require("request");
+const XLSX = require("xlsx");
 const { token, guildId, dataUrl } = require("../config.json");
 export class CommandReloadData implements ICommand {
 
@@ -17,8 +19,6 @@ export class CommandReloadData implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
-        const request = require("request");
-        const XLSX = require("xlsx");
 
         request.get(dataUrl, { encoding: null }, function (err: any, res: any, data: any) {
             if (err || res.statusCode != 200) {
