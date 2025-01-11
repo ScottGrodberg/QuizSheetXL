@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Data, Question, QuestionType, User } from "../Data";
+import { Data, User } from "../Data";
 import { ICommand } from "./ICommand";
 
 export class CommandAnswer implements ICommand {
@@ -35,10 +35,10 @@ export class CommandAnswer implements ICommand {
         }
 
         if (include) {
-            user.answer.add(index);
+            this.data.answer.add(index);
             interaction.reply(`Added column ${index} to the answer format`);
         } else {
-            user.answer.delete(index);
+            this.data.answer.delete(index);
             interaction.reply(`Removed column ${index} from the answer format`);
         }
 

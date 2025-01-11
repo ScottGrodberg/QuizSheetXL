@@ -46,7 +46,6 @@ export class CommandReloadData implements ICommand {
             }
             sheet.push(values.slice(1));
         }
-        this.data.columns = columns;
         this.data.sheet = sheet
         interaction.reply(`Reloaded the data`);
     }
