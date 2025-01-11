@@ -26,6 +26,10 @@ client.once(Events.ClientReady, client => {
         client.application.commands.create(command.getCommand(), guildId);
     });
 
+    // Load the sheet data for the first time
+    const interaction = { reply: () => { } } as any;
+    commands[0].processCommand(interaction);
+
 });
 
 client.on(Events.InteractionCreate, interaction => processCommand(interaction));
