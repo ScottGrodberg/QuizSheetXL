@@ -33,5 +33,6 @@ export class Question {
 
 export class Data {
     users = new Map<UserId, User>();
-
+    sheet = new Array<Array<string>>();
+    columns = new Array<string>();
 }

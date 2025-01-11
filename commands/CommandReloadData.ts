@@ -20,19 +20,34 @@ export class CommandReloadData implements ICommand {
 
     processCommand(interaction: ChatInputCommandInteraction): void {
 
-        request.get(dataUrl, { encoding: null }, function (err: any, res: any, data: any) {
-            if (err || res.statusCode != 200) {
-                console.log(res.statusCode);
-                return;
-            }
-            const buf = Buffer.from(data);
-            const workbook = XLSX.read(buf);
-
-            var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
-            console.log(XLSX.utils.sheet_to_json(sheet1));
-            interaction.reply(`Reloaded the data`);
-        });
+        request.get(dataUrl, { encoding: null }, this.requestCallback.bind(this, interaction));
 
     }
 
+    requestCallback(interaction: ChatInputCommandInteraction, err: any, res: any, data: any) {
+        if (err || res.statusCode != 200) {
+            console.log(res.statusCode);
+            return;
+        }
+        const buf = Buffer.from(data);
+        const workbook = XLSX.read(buf);
+
+        var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
+        const arySheet = XLSX.utils.sheet_to_json(sheet1);
+
+        const columns = Object.values(arySheet[0]).slice(1) as Array<string>;
+        const sheet = new Array<Array<string>>(); // a 2d array
+
+        for (let i = 1; i < arySheet.length; i++) {
+            const values = Object.values(arySheet[i]) as Array<string>;
+            if (values.length < columns.length) {
+                // empty row, next
+                continue;
+            }
+            sheet.push(values.slice(1));
+        }
+        this.data.columns = columns;
+        this.data.sheet = sheet
+        interaction.reply(`Reloaded the data`);
+    }
 }
