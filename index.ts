@@ -32,9 +32,15 @@ client.once(Events.ClientReady, client => {
 
 });
 
-client.on(Events.InteractionCreate, interaction => processCommand(interaction));
+client.on(Events.InteractionCreate, interaction => {
+    processCommand(interaction);
+    question(interaction);
+});
 
-client.on(Events.MessageCreate, message => { });
+client.on(Events.MessageCreate, message => {
+    answer(message);
+    question(message);
+});
 
 client.login(token);
 
@@ -44,5 +50,20 @@ function processCommand(interaction: any) {
             command.processCommand(interaction);
         }
     });
+}
 
+function question(interaction: any) {
+    // don't reply to self
+    if (interaction.author == client.user || interaction.author.bot) {
+        return
+    }
+    interaction.reply("This is asking a question");
+}
+
+function answer(interaction: any) {
+    // don't reply to self
+    if (interaction.author == client.user || interaction.author.bot) {
+        return
+    }
+    interaction.reply("This is processing an answer");
 }
