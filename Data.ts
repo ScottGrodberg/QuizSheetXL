@@ -10,14 +10,12 @@ export class Answer {
 }
 
 export class User {
-    qTypes: Array<string>;
-    ask: string;  // which column(s) to ask / question
-    answer: string; // which columns(s) to allow answer with
+    question: Set<number>;  // question format, which column(s) compose question
+    answer: Set<number>; // answer format, which columns(s) to compose answers
 
     constructor(public userId: UserId, public channelId: ChannelId) {
-        this.qTypes = new Array();
-        this.ask = "";
-        this.answer = "";
+        this.question = new Set();
+        this.answer = new Set();
     }
 }
 

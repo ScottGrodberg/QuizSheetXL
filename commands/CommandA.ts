@@ -36,15 +36,15 @@ export class CommandA implements ICommand {
             this.data.users.set(interaction.user.id, user);
         }
 
-        // Push the answer
-        const question = user.question;
-        if (!question) {
-            interaction.reply("Could not find a current question. Create one before adding answers");
-            return;
-        }
-        question.answers.push(answer);
+        // // Push the answer
+        // const question = user.question;
+        // if (!question) {
+        //     interaction.reply("Could not find a current question. Create one before adding answers");
+        //     return;
+        // }
+        // question.answers.push(answer);
 
-        interaction.reply(`Added. Question ${question.id} now has ${question.answers.length} answers`);
+        // interaction.reply(`Added. Question ${question.id} now has ${question.answers.length} answers`);
     }
 
 }
