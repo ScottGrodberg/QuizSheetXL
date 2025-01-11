@@ -3,15 +3,18 @@ import { Client, GatewayIntentBits, Events } from "discord.js";
 import { Data } from "./Data";
 import { CommandQ } from "./commands/CommandQ";
 import { CommandA } from "./commands/CommandA";
-import { CommandQuiz } from "./commands/CommandQuiz";
+import { CommandReloadData } from "./commands/CommandReloadData";
 
 const { token, guildId } = require("./config.json");
 
 const data = new Data();
-const commandQ = new CommandQ(data);
-const commandA = new CommandA(data);
-const commandQuiz = new CommandQuiz(data);
-const commands = [commandQ, commandA, commandQuiz];
+// const commandQ = new CommandQ(data);
+// const commandA = new CommandA(data);
+const commandReloadData = new CommandReloadData(data);
+const commands = [
+    // commandQ, 
+    // commandA, 
+    commandReloadData];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 

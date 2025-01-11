@@ -10,11 +10,14 @@ export class Answer {
 }
 
 export class User {
-    points: number;
-    question?: Question;
+    qTypes: Array<string>;
+    ask: string;  // which column(s) to ask / question
+    answer: string; // which columns(s) to allow answer with
 
     constructor(public userId: UserId, public channelId: ChannelId) {
-        this.points = 0;
+        this.qTypes = new Array();
+        this.ask = "";
+        this.answer = "";
     }
 }
 
@@ -29,7 +32,6 @@ export class Question {
 }
 
 export class Data {
-    questions = new Map<QuestionId, Question>();
-    users = new Map<UserId, User>(); // Used to track which question the user is creating
-    channels = new Map<ChannelId, Array<Question>>();
+    users = new Map<UserId, User>();
+
 }
