@@ -100,7 +100,7 @@ function question(interaction: any) {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (data.answer.has(j)) {
-                output += i + " " + data.sheet[data.currentAnswers[i]][j] + "  ";
+                output += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "  ";
             }
         }
     }
@@ -122,10 +122,10 @@ function answer(interaction: any) {
         return;
     }
     const index = parseInt(match[0]);
-    if (index > 3) {
+    if (index < 1 || index > 4) {
         return;
     }
-    if (data.currentAnswers[index] === data.currentQuestion) {
+    if (data.currentAnswers[index - 1] === data.currentQuestion) {
         _interaction.reply(`Correct`);
     } else {
         _interaction.reply(`Wrong`);
