@@ -10,8 +10,8 @@ export class User {
 export class Data {
     users = new Map<UserId, User>();
 
-    // TODO: These vars should have data for a single channel
     sheet = new Array<Array<string>>();
+    columns = new Array<string>();
 
     question = new Set<number>();  // question format, which column(s) compose question
     answer = new Set<number>(); // answer format, which columns(s) to compose answers
