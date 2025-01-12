@@ -21,6 +21,7 @@ export class Data {
 
     constructor() {
         this.question.add(0);
-        this.answer.add(1);
+        this.question.add(1);
+        this.answer.add(2);
     }
 }
