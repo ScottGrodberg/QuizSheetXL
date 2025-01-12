@@ -34,7 +34,6 @@ client.once(Events.ClientReady, client => {
 
 client.on(Events.InteractionCreate, interaction => {
     processCommand(interaction);
-    question(interaction);
 });
 
 client.on(Events.MessageCreate, message => {
