@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Events } from "discord.js";
+import { Client, GatewayIntentBits, Events, Message } from "discord.js";
 
 import { Data } from "./Data";
 import { CommandQuestion } from "./commands/CommandQuestion";
@@ -17,7 +17,7 @@ const commands = [
     commandAnswer
 ];
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 client.once(Events.ClientReady, client => {
     console.log(`Logged into discord as ${client.user.tag}`);
@@ -67,19 +67,25 @@ function question(interaction: any) {
         // Randomly put the correct answer in one of the four slots        
         data.currentAnswers[Math.floor(Math.random() * 4)] = data.currentQuestion;
 
-        // Randomly choose 3 incorrect answers
-        const incorrectAnswersSet = new Set<number>();
-        while (incorrectAnswersSet.size < 3) {
-            incorrectAnswersSet.add(Math.floor(Math.random() * data.sheet.length)); // +1 to not select the header row
+        // Start building a set to hold the answers, add the current question as one of the possible chocies
+        const answerSet = new Set<number>();
+        answerSet.add(data.currentQuestion);
+
+        // Randomly choose 3 more (incorrect) answers
+        while (answerSet.size < 4) {
+            answerSet.add(Math.floor(Math.random() * data.sheet.length)); // +1 to not select the header row
         }
 
+        // Remove the answer that was blocking a random choice
+        answerSet.delete(data.currentQuestion);
+
         // Iterate the answers, if still needs to be filled then fill it, otherwise skip over        
-        const incorrectAnswersArray = Array.from(incorrectAnswersSet);
+        const answerArray = Array.from(answerSet);
         for (let i = 0; i < 4; i++) {
             if (data.currentAnswers[i] !== -1) {
                 continue;
             }
-            data.currentAnswers[i] = incorrectAnswersArray.pop()!;
+            data.currentAnswers[i] = answerArray.shift()!;
         }
     }
 
@@ -106,6 +112,24 @@ function answer(interaction: any) {
     if (interaction.author == client.user || interaction.author.bot) {
         return
     }
-    interaction.reply("This is processing an answer");
-    // if answer is correct, set data.currentQuestion to -1
+    const _interaction = interaction as Message;
+    const content = _interaction.content;
+    if (content.length !== 1) {
+        return;
+    }
+    const match = content.match(/\d/);
+    if (!match) {
+        return;
+    }
+    const index = parseInt(match[0]);
+    if (index > 3) {
+        return;
+    }
+    if (data.currentAnswers[index] === data.currentQuestion) {
+        _interaction.reply(`Correct`);
+    } else {
+        _interaction.reply(`Wrong`);
+    }
+
+    // TODO: if answer is correct, set data.currentQuestion to -1
 }
