@@ -20,8 +20,14 @@ export class Data {
     currentAnswers = new Array<number>(4); // the correct answer will have the same id as the question
 
     constructor() {
-        this.question.add(0);
-        this.question.add(1);
-        this.answer.add(2);
+        // // Question is the foreign language, answer is english
+        // this.question.add(0);
+        // this.question.add(1);
+        // this.answer.add(2);
+
+        // Question is english, answer is foreign language
+        this.question.add(2);
+        //this.answer.add(0);
+        this.answer.add(1);
     }
 }
