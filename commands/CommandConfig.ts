@@ -15,7 +15,13 @@ export class CommandConfig implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
+        interaction.reply({
+            content: `Here is the config`,
+            components: [this.getActionRowComponents()],
+        });
+    }
 
+    getActionRowComponents(): ActionRowBuilder<ButtonBuilder> {
         const confirm = new ButtonBuilder()
             .setCustomId('test')
             .setLabel('Test ')
@@ -24,11 +30,7 @@ export class CommandConfig implements ICommand {
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(confirm);
 
-        interaction.reply({
-            content: `Here is the config`,
-            components: [row],
-        });
+        return row;
 
     }
-
 }

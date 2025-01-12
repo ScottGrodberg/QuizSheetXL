@@ -146,8 +146,7 @@ client.on('interactionCreate', async interaction => {
 
         await interaction.update({
 
-            components: [new ActionRowBuilder<ButtonBuilder>().addComponents(new ButtonBuilder().setCustomId('test')
-                .setLabel('Test2').setStyle(ButtonStyle.Success))]
+            components: [commandConfig.getActionRowComponents()]
 
         });
 
