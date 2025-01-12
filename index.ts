@@ -127,9 +127,9 @@ function answer(interaction: any) {
     }
     if (data.currentAnswers[index - 1] === data.currentQuestion) {
         _interaction.reply(`Correct`);
+        data.currentQuestion = -1;
     } else {
         _interaction.reply(`Wrong`);
     }
 
-    // TODO: if answer is correct, set data.currentQuestion to -1
 }
