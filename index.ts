@@ -99,7 +99,7 @@ function question(interaction: any) {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (data.answer.has(j)) {
-                output += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "  ";
+                output += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
             }
         }
     }
