@@ -13,6 +13,7 @@ export class Data {
     sheet = new Array<Array<string>>();
     columns = new Array<string>();
 
+    // TODO: Move these into User so each can have their own formats
     question = new Set<number>();  // question format, which column(s) compose question
     answer = new Set<number>(); // answer format, which columns(s) to compose answers
 
