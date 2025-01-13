@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Events, Message } from "discord.js";
+import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel } from "discord.js";
 
 import { Data } from "./Data";
 import { CommandQuestion } from "./commands/CommandQuestion";
@@ -51,10 +51,10 @@ function processCommand(interaction: any) {
     });
 }
 
-function question(interaction: any) {
+function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
 
     // Don't reply to self
-    if (interaction.author == client.user || interaction.author?.bot) {
+    if (message.author == client.user || message.author?.bot) {
         return
     }
 
@@ -64,25 +64,26 @@ function question(interaction: any) {
     }
 
     // Output the question
-    let output = "";
+    let question = "";
     for (let i = 0; i < 4; i++) {
         if (data.question.has(i)) {
-            output += data.sheet[data.currentQuestion][i] + " ";
+            question += data.sheet[data.currentQuestion][i] + " ";
         }
     }
-    output += "\n";
+    message.channel.send(`${question}`);
 
-    // Output the answers
-    for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-            if (data.answer.has(j)) {
-                output += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
+    setTimeout(() => {
+        // Pause, and then output the answers
+        let answers = "";
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                if (data.answer.has(j)) {
+                    answers += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
+                }
             }
         }
-    }
-
-    // Send the output
-    interaction.reply(`${output}`);
+        message.channel.send(`${answers}`);
+    }, data.pauseSeconds * 1000);
 
 }
 
@@ -120,13 +121,12 @@ function selectQuestionAndAnswers() {
 
 }
 
-function answer(interaction: any) {
+function answer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     // don't reply to self
-    if (interaction.author == client.user || interaction.author.bot) {
+    if (message.author == client.user || message.author.bot) {
         return
     }
-    const _interaction = interaction as Message;
-    const content = _interaction.content;
+    const content = message.content;
     if (content.length !== 1) {
         return;
     }
@@ -139,10 +139,10 @@ function answer(interaction: any) {
         return;
     }
     if (data.currentAnswers[index - 1] === data.currentQuestion) {
-        _interaction.reply(`Correct`);
+        message.channel.send(`Correct`);
         data.currentQuestion = -1;
     } else {
-        _interaction.reply(`Wrong`);
+        message.channel.send(`Wrong`);
     }
 
 }

@@ -19,6 +19,8 @@ export class Data {
     currentQuestion = -1; // number;
     currentAnswers = new Array<number>(4); // the correct answer will have the same id as the question
 
+    pauseSeconds = 2; // Wait 2 after sending the question before sending the answers
+
     constructor() {
         // // Question is the foreign language, answer is english
         // this.question.add(0);
