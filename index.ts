@@ -1,7 +1,5 @@
 import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { Data } from "./Data";
-import { CommandQuestion } from "./commands/CommandQuestion";
-import { CommandAnswer } from "./commands/CommandAnswer";
 import { CommandReloadData } from "./commands/CommandReloadData";
 import { CommandConfig } from "./commands/CommandConfig";
 
@@ -10,13 +8,9 @@ const { token, guildId } = require("./config.json");
 const data = new Data();
 const commandConfig = new CommandConfig(data);
 const commandReloadData = new CommandReloadData(data);
-const commandQuestion = new CommandQuestion(data);
-const commandAnswer = new CommandAnswer(data);
 const commands = [
     commandConfig,
-    commandReloadData,
-    commandQuestion,
-    commandAnswer
+    commandReloadData
 ];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
