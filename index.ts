@@ -155,21 +155,3 @@ function answer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     }
 
 }
-
-client.on('interactionCreate', async interaction => {
-
-    if (!interaction.isButton()) return;
-
-    if (interaction.customId === 'test') {
-
-        // Update the button label after click
-
-        await interaction.update({
-
-            components: [commandConfig.getActionRowComponents()]
-
-        });
-
-    }
-
-});
