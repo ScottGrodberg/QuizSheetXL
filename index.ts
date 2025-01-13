@@ -51,6 +51,10 @@ function processCommand(interaction: any) {
             command.processCommand(interaction);
         }
     });
+
+    if (interaction.isButton()) {
+        commandConfig.updateConfig();
+    }
 }
 
 function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
