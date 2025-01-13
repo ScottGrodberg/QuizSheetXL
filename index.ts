@@ -1,5 +1,4 @@
-import { Client, GatewayIntentBits, Events, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
-
+import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { Data } from "./Data";
 import { CommandQuestion } from "./commands/CommandQuestion";
 import { CommandAnswer } from "./commands/CommandAnswer";
@@ -54,68 +53,82 @@ function processCommand(interaction: any) {
     });
 }
 
-function question(interaction: any) {
-    // don't reply to self
-    if (interaction.author == client.user || interaction.author?.bot) {
+function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
+
+    // Don't reply to self
+    if (message.author == client.user || message.author?.bot) {
         return
     }
+
     if (data.currentQuestion === -1) {
-        // Randomly choose a question
-        data.currentQuestion = Math.floor(Math.random() * data.sheet.length);
-
-        // reset the answers, get ready to assign
-        data.currentAnswers = [-1, -1, -1, -1];
-
-        // Randomly put the correct answer in one of the four slots        
-        data.currentAnswers[Math.floor(Math.random() * 4)] = data.currentQuestion;
-
-        // Start building a set to hold the answers, add the current question as one of the possible chocies
-        const answerSet = new Set<number>();
-        answerSet.add(data.currentQuestion);
-
-        // Randomly choose 3 more (incorrect) answers
-        while (answerSet.size < 4) {
-            answerSet.add(Math.floor(Math.random() * data.sheet.length)); // +1 to not select the header row
-        }
-
-        // Remove the answer that was blocking a random choice
-        answerSet.delete(data.currentQuestion);
-
-        // Iterate the answers, if still needs to be filled then fill it, otherwise skip over        
-        const answerArray = Array.from(answerSet);
-        for (let i = 0; i < 4; i++) {
-            if (data.currentAnswers[i] !== -1) {
-                continue;
-            }
-            data.currentAnswers[i] = answerArray.shift()!;
-        }
+        // No question is currently selected, select one now
+        selectQuestionAndAnswers();
     }
 
-    let output = "";
+    // Output the question
+    let question = "";
     for (let i = 0; i < 4; i++) {
         if (data.question.has(i)) {
-            output += data.sheet[data.currentQuestion][i] + " ";
+            question += data.sheet[data.currentQuestion][i] + " ";
         }
     }
-    output += "\n";
+    message.channel.send(`${question}`);
 
-    for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-            if (data.answer.has(j)) {
-                output += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
+    setTimeout(() => {
+        // Pause, and then output the answers
+        let answers = "";
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                if (data.answer.has(j)) {
+                    answers += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
+                }
             }
         }
-    }
-    interaction.reply(`${output}`);
+        message.channel.send(`${answers}`);
+    }, data.pauseSeconds * 1000);
+
 }
 
-function answer(interaction: any) {
+
+function selectQuestionAndAnswers() {
+    // Randomly choose a question
+    data.currentQuestion = Math.floor(Math.random() * data.sheet.length);
+
+    // reset the answers, get ready to assign
+    data.currentAnswers = [-1, -1, -1, -1];
+
+    // Randomly put the correct answer in one of the four slots        
+    data.currentAnswers[Math.floor(Math.random() * 4)] = data.currentQuestion;
+
+    // Start building a set to hold the answers, add the current question as one of the possible chocies
+    const answerSet = new Set<number>();
+    answerSet.add(data.currentQuestion);
+
+    // Randomly choose 3 more (incorrect) answers
+    while (answerSet.size < 4) {
+        answerSet.add(Math.floor(Math.random() * data.sheet.length)); // +1 to not select the header row
+    }
+
+    // Remove the answer that was blocking a random choice
+    answerSet.delete(data.currentQuestion);
+
+    // Iterate the answers, if still needs to be filled then fill it, otherwise skip over        
+    const answerArray = Array.from(answerSet);
+    for (let i = 0; i < 4; i++) {
+        if (data.currentAnswers[i] !== -1) {
+            continue;
+        }
+        data.currentAnswers[i] = answerArray.shift()!;
+    }
+
+}
+
+function answer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     // don't reply to self
-    if (interaction.author == client.user || interaction.author.bot) {
+    if (message.author == client.user || message.author.bot) {
         return
     }
-    const _interaction = interaction as Message;
-    const content = _interaction.content;
+    const content = message.content;
     if (content.length !== 1) {
         return;
     }
@@ -128,10 +141,10 @@ function answer(interaction: any) {
         return;
     }
     if (data.currentAnswers[index - 1] === data.currentQuestion) {
-        _interaction.reply(`Correct`);
+        message.channel.send(`Correct`);
         data.currentQuestion = -1;
     } else {
-        _interaction.reply(`Wrong`);
+        message.channel.send(`Wrong`);
     }
 
 }

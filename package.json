@@ -1,5 +1,5 @@
 {
-  "name": "quizFromGoogleSheets",
+  "name": "QuizSheetXL",
   "version": "1.0.0",
   "description": "Using discord.js and vscode\r https://www.youtube.com/watch?v=Q0JlD7gCZRs",
   "main": "index.js",
