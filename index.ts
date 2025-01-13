@@ -30,7 +30,7 @@ client.once(Events.ClientReady, client => {
 
     // Load the sheet data for the first time
     const interaction = { reply: () => { } } as any;
-    commands[1].processCommand(interaction);
+    commandReloadData.processCommand(interaction);
 
 });
 
