@@ -16,19 +16,22 @@ export class CommandConfig implements ICommand {
 
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
-            content: `Here is the config`,
-            components: [this.getActionRowComponents()],
+            content: `1st row is question format. 2nd row is answer format`,
+            components: [
+                this.getActionRowComponents(this.data.question, "question"),
+                this.getActionRowComponents(this.data.answer, "answer")
+            ]
         });
     }
 
-    getActionRowComponents(): ActionRowBuilder<ButtonBuilder> {
+    getActionRowComponents(set: Set<number>, rowType: string): ActionRowBuilder<ButtonBuilder> {
 
         // Build the question format buttons
         const buttons = new Array<ButtonBuilder>();
         for (let i = 0; i < 4; i++) {
-            const buttonStyle = this.data.question.has(i) ? ButtonStyle.Primary : ButtonStyle.Secondary;
+            const buttonStyle = set.has(i) ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
-                .setCustomId(`button-question-${i}`)
+                .setCustomId(`button-${rowType}-${i}`)
                 .setLabel(this.data.columns[i])
                 .setStyle(buttonStyle);
 

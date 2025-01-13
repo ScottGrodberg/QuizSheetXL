@@ -55,7 +55,10 @@ function processCommand(interaction: any) {
     if (interaction.isButton()) {
         commandConfig.updateConfig(interaction);
         interaction.update({
-            components: [commandConfig.getActionRowComponents()]
+            components: [
+                commandConfig.getActionRowComponents(data.question, "question"),
+                commandConfig.getActionRowComponents(data.answer, "answer")
+            ]
         });
     }
 }
