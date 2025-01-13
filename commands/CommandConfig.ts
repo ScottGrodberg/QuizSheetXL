@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Component, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, Component, Interaction, SlashCommandBuilder } from "discord.js";
 import { Data, User } from "../Data";
 import { ICommand } from "./ICommand";
 
@@ -42,7 +42,25 @@ export class CommandConfig implements ICommand {
 
     }
 
-    updateConfig() {
-        console.log(`TODO: Updated config`);
+    updateConfig(interaction: ButtonInteraction<CacheType>) {
+        const idSplit = interaction.customId.split("-");
+        const rowType = idSplit[1];
+        const index = parseInt(idSplit[2]);
+        const on = interaction.component.style === ButtonStyle.Secondary;
+        if (rowType === "question") {
+            if (on) {
+                this.data.question.add(index);
+            } else {
+                this.data.question.delete(index);
+            }
+
+        } else if (rowType === "answer") {
+            if (on) {
+                this.data.answer.add(index);
+            } else {
+                this.data.answer.delete(index);
+            }
+        }
+        console.log(`Updated config`);
     }
 }

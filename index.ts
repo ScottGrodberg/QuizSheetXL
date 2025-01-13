@@ -53,7 +53,10 @@ function processCommand(interaction: any) {
     });
 
     if (interaction.isButton()) {
-        commandConfig.updateConfig();
+        commandConfig.updateConfig(interaction);
+        interaction.update({
+            components: [commandConfig.getActionRowComponents()]
+        });
     }
 }
 
