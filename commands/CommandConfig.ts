@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, Component, Interaction, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ActionRowComponent, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, Component, Interaction, SlashCommandBuilder } from "discord.js";
 import { Data, User } from "../Data";
 import { ICommand } from "./ICommand";
 
@@ -17,14 +17,18 @@ export class CommandConfig implements ICommand {
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
             content: `1st row is question format. 2nd row is answer format`,
-            components: [
-                this.getActionRowComponents(this.data.question, "question"),
-                this.getActionRowComponents(this.data.answer, "answer")
-            ]
+            components: this.getConfigComponents()
         });
     }
 
-    getActionRowComponents(set: Set<number>, rowType: string): ActionRowBuilder<ButtonBuilder> {
+    getConfigComponents(): Array<ActionRowBuilder<ButtonBuilder>> {
+        return [
+            this.getQARow(this.data.question, "question"),
+            this.getQARow(this.data.answer, "answer")
+        ]
+    }
+
+    getQARow(set: Set<number>, rowType: string): ActionRowBuilder<ButtonBuilder> {
 
         // Build the question format buttons
         const buttons = new Array<ButtonBuilder>();
