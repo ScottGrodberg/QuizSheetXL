@@ -4,7 +4,7 @@ import { ICommand } from "./ICommand";
 
 const request = require("request");
 const XLSX = require("xlsx");
-const { token, guildId, dataUrl } = require("../config.json");
+const { token, dataUrl } = require("../config.json");
 export class CommandReloadData implements ICommand {
 
     public commandName = "reload";

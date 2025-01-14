@@ -1,9 +1,9 @@
-import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, Guild } from "discord.js";
 import { Data } from "./Data";
 import { CommandReloadData } from "./commands/CommandReloadData";
 import { CommandConfig } from "./commands/CommandConfig";
 
-const { token, guildId } = require("./config.json");
+const { token } = require("./config.json");
 
 const data = new Data();
 const commandConfig = new CommandConfig(data);
@@ -19,7 +19,9 @@ client.once(Events.ClientReady, client => {
     console.log(`Logged into discord as ${client.user.tag}`);
 
     commands.forEach(command => {
-        client.application.commands.create(command.getCommand(), guildId);
+        client.guilds.cache.forEach((guild: Guild) => {
+            client.application.commands.create(command.getCommand(), guild.id);
+        });
     });
 
     // Load the sheet data for the first time
