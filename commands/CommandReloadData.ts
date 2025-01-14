@@ -4,7 +4,7 @@ import { ICommand } from "./ICommand";
 
 const request = require("request");
 const XLSX = require("xlsx");
-const { token, dataUrl } = require("../config.json");
+
 export class CommandReloadData implements ICommand {
 
     public commandName = "reload";
@@ -19,14 +19,12 @@ export class CommandReloadData implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
-
-        request.get(dataUrl, { encoding: null }, this.requestCallback.bind(this, interaction));
-
+        request.get(this.data.sheetUrl, { encoding: null }, this.requestCallback.bind(this, interaction));
     }
 
     requestCallback(interaction: ChatInputCommandInteraction, err: any, res: any, data: any) {
         if (err || res.statusCode != 200) {
-            console.log(res.statusCode);
+            console.log(`Error getting sheet: ${res?.statusCode}`);
             return;
         }
         const buf = Buffer.from(data);

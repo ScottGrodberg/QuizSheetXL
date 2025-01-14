@@ -2,15 +2,19 @@ import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, 
 import { Data } from "./Data";
 import { CommandReloadData } from "./commands/CommandReloadData";
 import { CommandConfig } from "./commands/CommandConfig";
+import { CommandSheet } from "./commands/CommandSheet";
 
 const { token } = require("./config.json");
 
 const data = new Data();
+
 const commandConfig = new CommandConfig(data);
 const commandReloadData = new CommandReloadData(data);
+const commandSheet = new CommandSheet(data, commandReloadData);
 const commands = [
     commandConfig,
-    commandReloadData
+    commandReloadData,
+    commandSheet
 ];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });

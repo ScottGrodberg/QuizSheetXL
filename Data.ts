@@ -1,4 +1,4 @@
-import { Utility } from "./Utility";
+const { token, dataUrl } = require("./config.json");
 
 type UserId = string;
 type ChannelId = string;
@@ -21,6 +21,7 @@ export class Data {
     currentAnswers = new Array<number>(4); // the correct answer will have the same id as the question
 
     pauseSeconds = 2; // Wait 2 after sending the question before sending the answers
+    sheetUrl: string;
 
     constructor() {
         // // Question is the foreign language, answer is english
@@ -32,5 +33,7 @@ export class Data {
         this.question.add(2);
         //this.answer.add(0);
         this.answer.add(1);
+
+        this.sheetUrl = dataUrl;
     }
 }
