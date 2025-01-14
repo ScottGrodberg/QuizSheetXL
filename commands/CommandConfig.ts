@@ -16,7 +16,7 @@ export class CommandConfig implements ICommand {
 
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
-            content: `1st row is question format. 2nd row is answer format`,
+            content: `1st row question format. 2nd row answer format. 3rd row answer pause`,
             components: this.getConfigComponents()
         });
     }
@@ -24,13 +24,12 @@ export class CommandConfig implements ICommand {
     getConfigComponents(): Array<ActionRowBuilder<ButtonBuilder>> {
         return [
             this.getQARow(this.data.question, "question"),
-            this.getQARow(this.data.answer, "answer")
+            this.getQARow(this.data.answer, "answer"),
+            this.getPauseRow(this.data.pauseSeconds, "pause")
         ]
     }
 
     getQARow(set: Set<number>, rowType: string): ActionRowBuilder<ButtonBuilder> {
-
-        // Build the question format buttons
         const buttons = new Array<ButtonBuilder>();
         for (let i = 0; i < 4; i++) {
             const buttonStyle = set.has(i) ? ButtonStyle.Primary : ButtonStyle.Secondary;
@@ -49,24 +48,50 @@ export class CommandConfig implements ICommand {
 
     }
 
+    getPauseRow(pauseSeconds: number, rowType: string): ActionRowBuilder<ButtonBuilder> {
+        const buttons = new Array<ButtonBuilder>();
+        for (let i = 0; i < 4; i++) {
+            const buttonStyle = pauseSeconds === i ? ButtonStyle.Primary : ButtonStyle.Secondary;
+            const button = new ButtonBuilder()
+                .setCustomId(`button-${rowType}-${i}`)
+                .setLabel(`${i} seconds`)
+                .setStyle(buttonStyle);
+
+            buttons.push(button);
+        }
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(buttons);
+
+        return row;
+
+    }
+
     updateConfig(interaction: ButtonInteraction<CacheType>) {
         const idSplit = interaction.customId.split("-");
         const rowType = idSplit[1];
         const index = parseInt(idSplit[2]);
         const on = interaction.component.style === ButtonStyle.Secondary;
-        if (rowType === "question") {
-            if (on) {
-                this.data.question.add(index);
-            } else {
-                this.data.question.delete(index);
-            }
-
-        } else if (rowType === "answer") {
-            if (on) {
-                this.data.answer.add(index);
-            } else {
-                this.data.answer.delete(index);
-            }
+        switch (rowType) {
+            case "question":
+                if (on) {
+                    this.data.question.add(index);
+                } else {
+                    this.data.question.delete(index);
+                }
+                break;
+            case "answer":
+                if (on) {
+                    this.data.answer.add(index);
+                } else {
+                    this.data.answer.delete(index);
+                }
+                break;
+            case "pause":
+                if (on) {
+                    this.data.pauseSeconds = index;
+                }
+                break;
         }
         console.log(`Updated config`);
     }
