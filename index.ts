@@ -74,7 +74,7 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
 
     // Output the question
     let question = "";
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < data.columns.length; i++) {
         if (data.question.has(i)) {
             question += data.sheet[data.currentQuestion][i] + " ";
         }
@@ -84,8 +84,8 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     setTimeout(() => {
         // Pause, and then output the answers
         let answers = "";
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
+        for (let i = 0; i < data.N_ANSWERS; i++) {
+            for (let j = 0; j < data.columns.length; j++) {
                 if (data.answer.has(j)) {
                     answers += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
                 }
@@ -102,17 +102,17 @@ function selectQuestionAndAnswers() {
     data.currentQuestion = Math.floor(Math.random() * data.sheet.length);
 
     // reset the answers, get ready to assign
-    data.currentAnswers = [-1, -1, -1, -1];
+    data.currentAnswers.fill(-1);
 
-    // Randomly put the correct answer in one of the four slots        
-    data.currentAnswers[Math.floor(Math.random() * 4)] = data.currentQuestion;
+    // Randomly put the correct answer in one of the slots        
+    data.currentAnswers[Math.floor(Math.random() * data.N_ANSWERS)] = data.currentQuestion;
 
     // Start building a set to hold the answers, add the current question as one of the possible chocies
     const answerSet = new Set<number>();
     answerSet.add(data.currentQuestion);
 
-    // Randomly choose 3 more (incorrect) answers
-    while (answerSet.size < 4) {
+    // Randomly choose n-1 more (incorrect) answers
+    while (answerSet.size < data.N_ANSWERS) {
         answerSet.add(Math.floor(Math.random() * data.sheet.length)); // +1 to not select the header row
     }
 
@@ -121,7 +121,7 @@ function selectQuestionAndAnswers() {
 
     // Iterate the answers, if still needs to be filled then fill it, otherwise skip over        
     const answerArray = Array.from(answerSet);
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < data.N_ANSWERS; i++) {
         if (data.currentAnswers[i] !== -1) {
             continue;
         }
@@ -144,7 +144,7 @@ function answer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         return;
     }
     const index = parseInt(match[0]);
-    if (index < 1 || index > 4) {
+    if (index < 1 || index > data.columns.length) {
         return;
     }
     if (data.currentAnswers[index - 1] === data.currentQuestion) {

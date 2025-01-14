@@ -8,8 +8,14 @@ export class User {
 }
 
 export class Data {
+
+    MAX_COLUMNS = 5;  // Need this to stay within the Discord limit of number of components in action row.
+    N_ANSWERS = 4;  // Answers are multiple-choice, with this many choices.
+    DEFAULT_PAUSE_SECONDS = 2;  // Wait after sending the question before sending the answers. Overridable within the /config command
+
     users = new Map<UserId, User>();
 
+    // TODO: Move these into a data structure for servers
     sheet = new Array<Array<string>>();
     columns = new Array<string>();
 
@@ -17,10 +23,10 @@ export class Data {
     question = new Set<number>();  // question format, which column(s) compose question
     answer = new Set<number>(); // answer format, which columns(s) to compose answers
 
+    pauseSeconds = this.DEFAULT_PAUSE_SECONDS;
     currentQuestion = -1; // number;
-    currentAnswers = new Array<number>(4); // the correct answer will have the same id as the question
+    currentAnswers = new Array<number>(this.N_ANSWERS); // the correct answer will have the same id as the question
 
-    pauseSeconds = 2; // Wait 2 after sending the question before sending the answers
     sheetUrl: string;
 
     constructor() {

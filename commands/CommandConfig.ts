@@ -31,7 +31,7 @@ export class CommandConfig implements ICommand {
 
     getQARow(set: Set<number>, rowType: string): ActionRowBuilder<ButtonBuilder> {
         const buttons = new Array<ButtonBuilder>();
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < this.data.columns.length; i++) {
             const buttonStyle = set.has(i) ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${i}`)
