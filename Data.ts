@@ -1,4 +1,4 @@
-const { token, dataUrl } = require("./config.json");
+const { token, sheetUrl } = require("./config.json");
 
 type UserId = string;
 type ChannelId = string;
@@ -34,6 +34,6 @@ export class Data {
         //this.answer.add(0);
         this.answer.add(1);
 
-        this.sheetUrl = dataUrl;
+        this.sheetUrl = sheetUrl;
     }
 }
