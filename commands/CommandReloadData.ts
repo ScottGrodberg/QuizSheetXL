@@ -35,23 +35,25 @@ export class CommandReloadData implements ICommand {
 
         let reply = "";
 
-        // determine the columns from the header
+        // Determine columns existence from the header
         const header = Object.values(arySheet[0]).slice(1).filter((v: any) => v.length > 0);
         const nCols = Math.min(header.length, this.data.MAX_COLUMNS);
         const columns = header.slice(0, nCols) as Array<string>;
 
-        const sheet = new Array<Array<string>>(); // a 2d array
+        const sheet = new Array<Array<string>>();
 
         for (let i = 1; i < arySheet.length; i++) {
             const values = Object.values(arySheet[i]).slice(1) as Array<string>;
             if (values.every(v => v.length === 0)) {
-                // empty row, next
+                // empty row, don't import it
                 continue;
             }
             sheet.push(values.slice(0, nCols));
         }
-        this.data.sheet = sheet;
+
         this.data.columns = columns;
+        this.data.sheet = sheet;
+
         reply += `Imported ${sheet.length} records. `;
         if (header.length > this.data.MAX_COLUMNS) {
             reply += "Only the leftmost 5 columns were taken. "
