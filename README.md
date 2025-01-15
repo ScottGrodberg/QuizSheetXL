@@ -9,6 +9,13 @@
 3. Add your token and data sheet url to `config.json`
 4. Invite the bot to your server and channel
 
+## Commands
+* `/category` lets you select which categories to study
+* `/sheet` tell the bot where your data sheet is
+* `/reload` reload the data sheet
+* `/pause` tell the bot how long to wait before showing the answers
+* `/qaformat` choose which columns to work with
+
 ## Notes on data sheet / import
 * Takes columns from the left
 * Columns should be contiguous with no gaps between them
