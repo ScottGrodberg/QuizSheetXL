@@ -6,10 +6,8 @@
 ## Usage
 1. Register the bot as a discord application https://discord.com/developers/applications
 2. Only bot role is necessary, specifically permissions to Commands and Messages
-2. Create a file in the root of the project called `config.json` with the contents of empty object `{}`
-3. Put an entry to the object, `"token": "MY_OAUTH2_TOKEN"`
-4. Put another entry in for `"sheetUrl" : "https://docs.groogle.com/spreadsheets/MY_SHEET_URL`
-5. Invite the bot to your server and channel
+3. Add your token and data sheet url to `config.json`
+4. Invite the bot to your server and channel
 
 ## Notes on data sheet / import
 * Takes columns from the left
