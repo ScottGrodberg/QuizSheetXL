@@ -57,6 +57,7 @@ export class CommandCategory implements ICommand, IButtonUpdater {
         } else {
             this.data.currentCategories.delete(category);
         }
+        this.data.buildSheetSubset();
         console.log(`Updated categories`);
     }
 }

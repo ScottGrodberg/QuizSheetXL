@@ -74,7 +74,7 @@ export class CommandReloadData implements ICommand {
             }
             if (this.data.currentCategories.size === 0) {
                 this.data.currentCategories = new Set(this.data.categories);
-                // TODO: call the row index builder from here
+                this.data.buildSheetSubset();
             }
         } else {
             reply += "If you want to filter the data, you need a column named Category. "

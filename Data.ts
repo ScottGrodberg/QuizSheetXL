@@ -16,6 +16,7 @@ export class Data {
     users = new Map<UserId, User>();
 
     // TODO: Move these into a data structure for servers
+    sheetUrl: string;
     sheet = new Array<Array<string>>();
     columns = new Array<string>();
     categories = new Array<string>();
@@ -27,10 +28,10 @@ export class Data {
     pauseSeconds = this.DEFAULT_PAUSE_SECONDS;
     currentQuestion = -1; // number;
     currentAnswers = new Array<number>(this.N_ANSWERS); // the correct answer will have the same id as the question
-    currentCategories = new Set<string>();
 
-    sheetUrl: string;
+    currentCategories = new Set<string>();
     categoryColIdx = -1;
+    sheetSubsetRowIds = new Array<number>();
 
     constructor() {
         // // Question is the foreign language, answer is english
@@ -45,4 +46,16 @@ export class Data {
 
         this.sheetUrl = sheetUrl;
     }
+
+    buildSheetSubset() {
+        // Build a list of row ids which are a subset of sheet based on selected categories.
+        let rowIdxs = new Array<number>();
+        for (let i = 0; i < this.sheet.length; i++) {
+            if (this.currentCategories.has(this.sheet[i][this.categoryColIdx])) {
+                rowIdxs.push(i)
+            }
+        }
+        this.sheetSubsetRowIds = rowIdxs;
+    }
+
 }
