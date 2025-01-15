@@ -19,10 +19,10 @@ export class CommandReloadData implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
-        request.get(this.data.sheetUrl, { encoding: null }, this.loadSheetFromResponse.bind(this, interaction));
+        request.get(this.data.sheetUrl, { encoding: null }, this.loadSheet.bind(this, interaction));
     }
 
-    loadSheetFromResponse(interaction: ChatInputCommandInteraction, err: any, res: any, data: any) {
+    loadSheet(interaction: ChatInputCommandInteraction, err: any, res: any, data: any) {
         if (err || res.statusCode != 200) {
             console.log(`Error getting sheet: ${res?.statusCode}`);
             return;

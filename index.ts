@@ -131,7 +131,7 @@ function selectQuestionAndAnswers(): boolean {
     // Build a data subset based on selected categories.
     // TODO: Extract this to a method and call it from two places:
     // * CommandCategories.updateConfig
-    // * CommandReloadData.loadSheetFromResponse
+    // * CommandReloadData.loadSheet
     let rowIdxs = new Array<number>();
     for (let i = 0; i < data.sheet.length; i++) {
         if (data.currentCategories.has(data.sheet[i][data.categoryColIdx])) {
