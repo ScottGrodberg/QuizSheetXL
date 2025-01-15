@@ -3,15 +3,15 @@ import { Data, User } from "../Data";
 import { ICommand } from "./ICommand";
 import { IButtonUpdater } from "./IButtonUpdater";
 
-export class CommandConfig implements ICommand, IButtonUpdater {
-    public commandName = "config";
+export class CommandQaformat implements ICommand, IButtonUpdater {
+    public commandName = "qaformat";
 
     constructor(public data: Data) { }
 
     getCommand(): any {
         const command = new SlashCommandBuilder()
             .setName(this.commandName)
-            .setDescription("Show the configuration");
+            .setDescription("Change the question and answers formats");
         return command;
     }
 
@@ -69,6 +69,6 @@ export class CommandConfig implements ICommand, IButtonUpdater {
                 }
                 break;
         }
-        console.log(`Updated config`);
+        console.log(`Updated qa formats`);
     }
 }

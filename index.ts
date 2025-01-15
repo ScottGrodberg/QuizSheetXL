@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, Guild } from "discord.js";
 import { Data } from "./Data";
 import { CommandReloadData } from "./commands/CommandReloadData";
-import { CommandConfig } from "./commands/CommandConfig";
+import { CommandQaformat } from "./commands/CommandQaformat";
 import { CommandSheet } from "./commands/CommandSheet";
 import { CommandPause } from "./commands/CommandPause";
 import { IButtonUpdater } from "./commands/IButtonUpdater";
@@ -10,12 +10,12 @@ const { token } = require("./config.json");
 
 const data = new Data();
 
-const commandConfig = new CommandConfig(data);
+const commandQaformat = new CommandQaformat(data);
 const commandPause = new CommandPause(data);
 const commandReloadData = new CommandReloadData(data);
 const commandSheet = new CommandSheet(data, commandReloadData);
 const commands = [
-    commandConfig,
+    commandQaformat,
     commandPause,
     commandReloadData,
     commandSheet
@@ -64,7 +64,7 @@ function processCommand(interaction: any) {
     const buttonId = interaction.customId.split("-")[1];
     let command: IButtonUpdater;
     if (buttonId === "answer" || buttonId === "question") {
-        command = commandConfig;
+        command = commandQaformat;
     } else if (buttonId === "pause") {
         command = commandPause;
     } else {
