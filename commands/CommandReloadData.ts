@@ -33,19 +33,29 @@ export class CommandReloadData implements ICommand {
         var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
         const arySheet = XLSX.utils.sheet_to_json(sheet1);
 
-        const columns = Object.values(arySheet[0]).slice(1) as Array<string>;
+        let reply = "";
+
+        // determine the columns from the header
+        const header = Object.values(arySheet[0]).slice(1);
+        const nCols = Math.min(header.length, this.data.MAX_COLUMNS);
+        const columns = header.slice(0, nCols) as Array<string>;
+
         const sheet = new Array<Array<string>>(); // a 2d array
 
         for (let i = 1; i < arySheet.length; i++) {
             const values = Object.values(arySheet[i]) as Array<string>;
-            if (values.length < columns.length) {
+            if (values.length - 1 < columns.length) {
                 // empty row, next
                 continue;
             }
-            sheet.push(values.slice(1));
+            sheet.push(values.slice(1, nCols + 1));
         }
         this.data.sheet = sheet;
         this.data.columns = columns;
-        interaction.reply(`Reloaded the data`);
+        reply += `Imported ${sheet.length} records. `;
+        if (header.length > this.data.MAX_COLUMNS) {
+            reply += "Only the leftmost 5 columns were taken. "
+        }
+        interaction.reply(reply);
     }
 }
