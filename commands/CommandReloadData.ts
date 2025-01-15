@@ -56,6 +56,10 @@ export class CommandReloadData implements ICommand {
         if (header.length > this.data.MAX_COLUMNS) {
             reply += "Only the leftmost 5 columns were taken. "
         }
+        if (!columns.find(c => c === "Category")) {
+            reply += "If you want to filter the data, you need a column named Category. "
+        }
+        console.log(reply);
         interaction.reply(reply);
     }
 }
