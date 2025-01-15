@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, Guild } from "discord.js";
 import { Data } from "./Data";
-import { CommandReloadData } from "./commands/CommandReloadData";
+import { CommandLoadData } from "./commands/CommandLoadData";
 import { CommandQaformat } from "./commands/CommandQaformat";
 import { CommandSheet } from "./commands/CommandSheet";
 import { CommandPause } from "./commands/CommandPause";
@@ -14,13 +14,13 @@ const data = new Data();
 const commandCategory = new CommandCategory(data);
 const commandQaformat = new CommandQaformat(data);
 const commandPause = new CommandPause(data);
-const commandReloadData = new CommandReloadData(data);
-const commandSheet = new CommandSheet(data, commandReloadData);
+const commandLoadData = new CommandLoadData(data);
+const commandSheet = new CommandSheet(data, commandLoadData);
 const commands = [
     commandCategory,
     commandQaformat,
     commandPause,
-    commandReloadData,
+    commandLoadData,
     commandSheet
 ];
 
@@ -37,7 +37,7 @@ client.once(Events.ClientReady, client => {
 
     // Load the sheet data for the first time
     const interaction = { reply: () => { } } as any;
-    commandReloadData.processCommand(interaction);
+    commandLoadData.processCommand(interaction);
 
 });
 

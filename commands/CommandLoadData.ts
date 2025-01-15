@@ -5,7 +5,7 @@ import { ICommand } from "./ICommand";
 const request = require("request");
 const XLSX = require("xlsx");
 
-export class CommandReloadData implements ICommand {
+export class CommandLoadData implements ICommand {
 
     public commandName = "reload";
 

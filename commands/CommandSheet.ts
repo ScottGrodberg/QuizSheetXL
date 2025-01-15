@@ -1,13 +1,13 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Data } from "../Data";
 import { ICommand } from "./ICommand";
-import { CommandReloadData } from "./CommandReloadData";
+import { CommandLoadData } from "./CommandLoadData";
 
 
 export class CommandSheet implements ICommand {
     public commandName = "sheet";
 
-    constructor(public data: Data, public commandReloadData: CommandReloadData) { }
+    constructor(public data: Data, public commandLoadData: CommandLoadData) { }
 
     getCommand(): any {
         const command = new SlashCommandBuilder()
@@ -26,7 +26,7 @@ export class CommandSheet implements ICommand {
         const url = interaction.options.getString("url")!;
         // TODO: Validate url
         this.data.sheetUrl = url;
-        this.commandReloadData.processCommand(interaction);
+        this.commandLoadData.processCommand(interaction);
 
     }
 }
