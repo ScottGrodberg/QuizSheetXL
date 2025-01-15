@@ -5,16 +5,19 @@ import { CommandQaformat } from "./commands/CommandQaformat";
 import { CommandSheet } from "./commands/CommandSheet";
 import { CommandPause } from "./commands/CommandPause";
 import { IButtonUpdater } from "./commands/IButtonUpdater";
+import { CommandCategory } from "./commands/CommandCategory";
 
 const { token } = require("./config.json");
 
 const data = new Data();
 
+const commandCategory = new CommandCategory(data);
 const commandQaformat = new CommandQaformat(data);
 const commandPause = new CommandPause(data);
 const commandReloadData = new CommandReloadData(data);
 const commandSheet = new CommandSheet(data, commandReloadData);
 const commands = [
+    commandCategory,
     commandQaformat,
     commandPause,
     commandReloadData,
@@ -67,6 +70,8 @@ function processCommand(interaction: any) {
         command = commandQaformat;
     } else if (buttonId === "pause") {
         command = commandPause;
+    } else if (buttonId === "category") {
+        command = commandCategory;
     } else {
         console.error(`Unexpected button id`);
         return;
