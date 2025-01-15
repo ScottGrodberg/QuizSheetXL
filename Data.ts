@@ -59,4 +59,8 @@ export class Data {
         user.sheetSubsetRowIds = rowIdxs;
     }
 
+    rollback(user: User) {
+        user.currentQuestion = -1;
+        user.currentAnswers.fill(-1);
+    }
 }

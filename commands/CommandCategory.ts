@@ -60,6 +60,7 @@ export class CommandCategory implements ICommand, IButtonUpdater {
             user.currentCategories.delete(category);
         }
         this.data.buildSheetSubset(interaction.user.id);
+        this.data.rollback(user);
         console.log(`Updated categories`);
     }
 }
