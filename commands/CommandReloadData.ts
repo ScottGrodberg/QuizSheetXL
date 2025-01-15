@@ -43,12 +43,12 @@ export class CommandReloadData implements ICommand {
         const sheet = new Array<Array<string>>(); // a 2d array
 
         for (let i = 1; i < arySheet.length; i++) {
-            const values = Object.values(arySheet[i]) as Array<string>;
+            const values = Object.values(arySheet[i]).slice(1) as Array<string>;
             if (values.every(v => v.length === 0)) {
                 // empty row, next
                 continue;
             }
-            sheet.push(values.slice(1, nCols + 1));
+            sheet.push(values.slice(0, nCols));
         }
         this.data.sheet = sheet;
         this.data.columns = columns;
