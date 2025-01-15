@@ -11,7 +11,7 @@ export class Data {
 
     MAX_COLUMNS = 5;  // Need this to stay within the Discord limit of number of components in action row.
     N_ANSWERS = 4;  // Answers are multiple-choice, with this many choices.
-    DEFAULT_PAUSE_SECONDS = 2;  // Wait after sending the question before sending the answers. Overridable within the /config command
+    DEFAULT_PAUSE_SECONDS = 2;  // Wait after sending the question before sending the answers. Overridable within the /pause command
 
     users = new Map<UserId, User>();
 

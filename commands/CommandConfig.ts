@@ -1,8 +1,9 @@
 import { ActionRowBuilder, ActionRowComponent, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, Component, Interaction, SlashCommandBuilder } from "discord.js";
 import { Data, User } from "../Data";
 import { ICommand } from "./ICommand";
+import { IButtonUpdater } from "./IButtonUpdater";
 
-export class CommandConfig implements ICommand {
+export class CommandConfig implements ICommand, IButtonUpdater {
     public commandName = "config";
 
     constructor(public data: Data) { }
@@ -16,7 +17,7 @@ export class CommandConfig implements ICommand {
 
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
-            content: `1st row question format. 2nd row answer format. 3rd row answer pause`,
+            content: `1st row question format. 2nd row answer format`,
             components: this.getConfigComponents()
         });
     }
@@ -24,8 +25,7 @@ export class CommandConfig implements ICommand {
     getConfigComponents(): Array<ActionRowBuilder<ButtonBuilder>> {
         return [
             this.getQARow(this.data.question, "question"),
-            this.getQARow(this.data.answer, "answer"),
-            this.getPauseRow(this.data.pauseSeconds, "pause")
+            this.getQARow(this.data.answer, "answer")
         ]
     }
 
@@ -36,25 +36,6 @@ export class CommandConfig implements ICommand {
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${i}`)
                 .setLabel(this.data.columns[i])
-                .setStyle(buttonStyle);
-
-            buttons.push(button);
-        }
-
-        const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(buttons);
-
-        return row;
-
-    }
-
-    getPauseRow(pauseSeconds: number, rowType: string): ActionRowBuilder<ButtonBuilder> {
-        const buttons = new Array<ButtonBuilder>();
-        for (let i = 0; i < 4; i++) {
-            const buttonStyle = pauseSeconds === i ? ButtonStyle.Primary : ButtonStyle.Secondary;
-            const button = new ButtonBuilder()
-                .setCustomId(`button-${rowType}-${i}`)
-                .setLabel(`${i} seconds`)
                 .setStyle(buttonStyle);
 
             buttons.push(button);
@@ -85,11 +66,6 @@ export class CommandConfig implements ICommand {
                     this.data.answer.add(index);
                 } else {
                     this.data.answer.delete(index);
-                }
-                break;
-            case "pause":
-                if (on) {
-                    this.data.pauseSeconds = index;
                 }
                 break;
         }

@@ -3,16 +3,20 @@ import { Data } from "./Data";
 import { CommandReloadData } from "./commands/CommandReloadData";
 import { CommandConfig } from "./commands/CommandConfig";
 import { CommandSheet } from "./commands/CommandSheet";
+import { CommandPause } from "./commands/CommandPause";
+import { IButtonUpdater } from "./commands/IButtonUpdater";
 
 const { token } = require("./config.json");
 
 const data = new Data();
 
 const commandConfig = new CommandConfig(data);
+const commandPause = new CommandPause(data);
 const commandReloadData = new CommandReloadData(data);
 const commandSheet = new CommandSheet(data, commandReloadData);
 const commands = [
     commandConfig,
+    commandPause,
     commandReloadData,
     commandSheet
 ];
@@ -52,12 +56,25 @@ function processCommand(interaction: any) {
         }
     });
 
-    if (interaction.isButton()) {
-        commandConfig.updateConfig(interaction);
-        interaction.update({
-            components: commandConfig.getConfigComponents()
-        });
+    if (!interaction.isButton()) {
+        return;
     }
+
+    // Process the button click
+    const buttonId = interaction.customId.split("-")[1];
+    let command: IButtonUpdater;
+    if (buttonId === "answer" || buttonId === "question") {
+        command = commandConfig;
+    } else if (buttonId === "pause") {
+        command = commandPause;
+    } else {
+        console.error(`Unexpected button id`);
+        return;
+    }
+    command.updateConfig(interaction);
+    interaction.update({
+        components: command.getConfigComponents()
+    });
 }
 
 function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
