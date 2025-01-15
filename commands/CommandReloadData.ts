@@ -31,12 +31,12 @@ export class CommandReloadData implements ICommand {
         const workbook = XLSX.read(buf);
 
         var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
-        const arySheet = XLSX.utils.sheet_to_json(sheet1);
+        const arySheet = XLSX.utils.sheet_to_json(sheet1, { defval: "" });
 
         let reply = "";
 
         // determine the columns from the header
-        const header = Object.values(arySheet[0]).slice(1);
+        const header = Object.values(arySheet[0]).slice(1).filter((v: any) => v.length > 0);
         const nCols = Math.min(header.length, this.data.MAX_COLUMNS);
         const columns = header.slice(0, nCols) as Array<string>;
 
@@ -44,7 +44,7 @@ export class CommandReloadData implements ICommand {
 
         for (let i = 1; i < arySheet.length; i++) {
             const values = Object.values(arySheet[i]) as Array<string>;
-            if (values.length - 1 < columns.length) {
+            if (values.every(v => v.length === 0)) {
                 // empty row, next
                 continue;
             }
