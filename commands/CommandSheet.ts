@@ -23,9 +23,10 @@ export class CommandSheet implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
+        const user = this.data.users.get(interaction.user.id)!;
         const url = interaction.options.getString("url")!;
         // TODO: Validate url
-        this.data.sheetUrl = url;
+        user.server.sheetUrl = url;
         this.commandLoadData.processCommand(interaction);
 
     }

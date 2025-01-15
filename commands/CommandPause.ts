@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Data } from "../Data";
+import { Data, UserId } from "../Data";
 import { ICommand } from "./ICommand";
 import { IButtonUpdater } from "./IButtonUpdater";
 
@@ -18,20 +18,22 @@ export class CommandPause implements ICommand, IButtonUpdater {
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
             content: `Pause after asking a question, before showing the answers`,
-            components: this.getConfigComponents()
+            components: this.getConfigComponents(interaction.user.id)
         });
     }
 
-    getConfigComponents(): Array<ActionRowBuilder<ButtonBuilder>> {
+    getConfigComponents(userId: UserId): Array<ActionRowBuilder<ButtonBuilder>> {
         return [
-            this.getPauseRow(this.data.pauseSeconds, "pause")
+            this.getPauseRow("pause", userId)
         ]
     }
 
-    getPauseRow(pauseSeconds: number, rowType: string): ActionRowBuilder<ButtonBuilder> {
+    getPauseRow(rowType: string, userId: UserId): ActionRowBuilder<ButtonBuilder> {
         const buttons = new Array<ButtonBuilder>();
+        const user = this.data.users.get(userId)!;
+
         for (let i = 0; i < 4; i++) {
-            const buttonStyle = pauseSeconds === i ? ButtonStyle.Primary : ButtonStyle.Secondary;
+            const buttonStyle = user.pauseSeconds === i ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${i}`)
                 .setLabel(`${i} seconds`)
@@ -48,11 +50,12 @@ export class CommandPause implements ICommand, IButtonUpdater {
     }
 
     updateConfig(interaction: ButtonInteraction<CacheType>) {
+        const user = this.data.users.get(interaction.user.id)!;
         const idSplit = interaction.customId.split("-");
         const index = parseInt(idSplit[2]);
         const on = interaction.component.style === ButtonStyle.Secondary;
         if (on) {
-            this.data.pauseSeconds = index;
+            user.pauseSeconds = index;
         }
         console.log(`Updated pause length`);
     }

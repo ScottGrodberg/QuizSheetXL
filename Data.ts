@@ -1,61 +1,62 @@
 const { token, sheetUrl } = require("./config.json");
 
-type UserId = string;
-type ChannelId = string;
+export type UserId = string;
+export type ServerId = string;
+export type ChannelId = string;
 
 export class User {
-    constructor(public userId: UserId, public channelId: ChannelId) { }
-}
-
-export class Data {
-
-    MAX_COLUMNS = 5;  // Need this to stay within the Discord limit of number of components in action row.
-    N_ANSWERS = 4;  // Answers are multiple-choice, with this many choices.
-    DEFAULT_PAUSE_SECONDS = 2;  // Wait after sending the question before sending the answers. Overridable within the /pause command
-
-    users = new Map<UserId, User>();
-
-    // TODO: Move these into a data structure for servers
-    sheetUrl: string;
-    sheet = new Array<Array<string>>();
-    columns = new Array<string>();
-    categories = new Array<string>();
-
-    // TODO: Move these into User so each can have their own formats
     question = new Set<number>();  // question format, which column(s) compose question
     answer = new Set<number>(); // answer format, which columns(s) to compose answers
 
-    pauseSeconds = this.DEFAULT_PAUSE_SECONDS;
+    pauseSeconds = Data.DEFAULT_PAUSE_SECONDS;
+
     currentQuestion = -1; // number;
-    currentAnswers = new Array<number>(this.N_ANSWERS); // the correct answer will have the same id as the question
+    currentAnswers = new Array<number>(Data.N_ANSWERS); // the correct answer will have the same id as the question
 
     currentCategories = new Set<string>();
-    categoryColIdx = -1;
     sheetSubsetRowIds = new Array<number>();
 
-    constructor() {
-        // // Question is the foreign language, answer is english
-        // this.question.add(0);
-        // this.question.add(1);
-        // this.answer.add(2);
-
-        // Question is english, answer is foreign language
+    constructor(public userId: UserId, public server: Server) {
+        // Totally random guess which columns to start wtih
         this.question.add(2);
-        //this.answer.add(0);
         this.answer.add(1);
+    }
+}
 
+export class Server {
+    sheetUrl: string;
+
+    sheet = new Array<Array<string>>();
+    columns = new Array<string>();
+
+    categories = new Array<string>();
+    categoryColIdx = -1;
+
+    constructor(public serverId: ServerId) {
         this.sheetUrl = sheetUrl;
     }
+}
 
-    buildSheetSubset() {
+export class Data {
+    static MAX_COLUMNS = 5;  // Need this to stay within the Discord limit of number of components in action row.
+    static N_ANSWERS = 4;  // Answers are multiple-choice, with this many choices.
+    static DEFAULT_PAUSE_SECONDS = 2;  // Wait after sending the question before sending the answers. Overridable within the /pause command
+
+    users = new Map<UserId, User>();
+    servers = new Map<ServerId, Server>();
+
+    buildSheetSubset(userId: UserId) {
+        const user = this.users.get(userId)!;
+        const server = user.server;
+
         // Build a list of row ids which are a subset of sheet based on selected categories.
         let rowIdxs = new Array<number>();
-        for (let i = 0; i < this.sheet.length; i++) {
-            if (this.currentCategories.has(this.sheet[i][this.categoryColIdx])) {
+        for (let i = 0; i < server.sheet.length; i++) {
+            if (user.currentCategories.has(server.sheet[i][server.categoryColIdx])) {
                 rowIdxs.push(i)
             }
         }
-        this.sheetSubsetRowIds = rowIdxs;
+        user.sheetSubsetRowIds = rowIdxs;
     }
 
 }

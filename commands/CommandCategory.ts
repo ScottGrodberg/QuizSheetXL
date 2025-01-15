@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Data } from "../Data";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, SlashCommandBuilder, User } from "discord.js";
+import { Data, UserId } from "../Data";
 import { ICommand } from "./ICommand";
 import { IButtonUpdater } from "./IButtonUpdater";
 
@@ -18,21 +18,22 @@ export class CommandCategory implements ICommand, IButtonUpdater {
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
             content: `Select/deselect one or more categories`,
-            components: this.getConfigComponents()
+            components: this.getConfigComponents(interaction.user.id)
         });
     }
 
-    getConfigComponents(): Array<ActionRowBuilder<ButtonBuilder>> {
+    getConfigComponents(userId: UserId): Array<ActionRowBuilder<ButtonBuilder>> {
         return [
-            this.getCategoriesRow("category")
+            this.getCategoriesRow("category", userId)
         ]
     }
 
-    getCategoriesRow(rowType: string): ActionRowBuilder<ButtonBuilder> {
+    getCategoriesRow(rowType: string, userId: UserId): ActionRowBuilder<ButtonBuilder> {
+        const user = this.data.users.get(userId)!;
         const buttons = new Array<ButtonBuilder>();
-        for (let i = 0; i < this.data.categories.length; i++) {
-            const category = this.data.categories[i];
-            const buttonStyle = this.data.currentCategories.has(category) ? ButtonStyle.Primary : ButtonStyle.Secondary;
+        for (let i = 0; i < user.server.categories.length; i++) {
+            const category = user.server.categories[i];
+            const buttonStyle = user.currentCategories.has(category) ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${category}`)
                 .setLabel(`${category}`)
@@ -49,15 +50,16 @@ export class CommandCategory implements ICommand, IButtonUpdater {
     }
 
     updateConfig(interaction: ButtonInteraction<CacheType>) {
+        const user = this.data.users.get(interaction.user.id)!;
         const idSplit = interaction.customId.split("-");
         const category = idSplit[2];
         const on = interaction.component.style === ButtonStyle.Secondary;
         if (on) {
-            this.data.currentCategories.add(category);
+            user.currentCategories.add(category);
         } else {
-            this.data.currentCategories.delete(category);
+            user.currentCategories.delete(category);
         }
-        this.data.buildSheetSubset();
+        this.data.buildSheetSubset(interaction.user.id);
         console.log(`Updated categories`);
     }
 }

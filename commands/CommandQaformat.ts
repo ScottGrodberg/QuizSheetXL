@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ActionRowComponent, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChatInputCommandInteraction, Component, Interaction, SlashCommandBuilder } from "discord.js";
-import { Data, User } from "../Data";
+import { Data, User, UserId } from "../Data";
 import { ICommand } from "./ICommand";
 import { IButtonUpdater } from "./IButtonUpdater";
 
@@ -18,24 +18,25 @@ export class CommandQaformat implements ICommand, IButtonUpdater {
     processCommand(interaction: ChatInputCommandInteraction): void {
         interaction.reply({
             content: `1st row question format. 2nd row answer format`,
-            components: this.getConfigComponents()
+            components: this.getConfigComponents(interaction.user.id)
         });
     }
 
-    getConfigComponents(): Array<ActionRowBuilder<ButtonBuilder>> {
+    getConfigComponents(userId: UserId): Array<ActionRowBuilder<ButtonBuilder>> {
+        const user = this.data.users.get(userId)!;
         return [
-            this.getQARow(this.data.question, "question"),
-            this.getQARow(this.data.answer, "answer")
+            this.getQARow(user.question, "question", user),
+            this.getQARow(user.answer, "answer", user)
         ]
     }
 
-    getQARow(set: Set<number>, rowType: string): ActionRowBuilder<ButtonBuilder> {
+    getQARow(set: Set<number>, rowType: string, user: User): ActionRowBuilder<ButtonBuilder> {
         const buttons = new Array<ButtonBuilder>();
-        for (let i = 0; i < this.data.columns.length; i++) {
+        for (let i = 0; i < user.server.columns.length; i++) {
             const buttonStyle = set.has(i) ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${i}`)
-                .setLabel(this.data.columns[i])
+                .setLabel(user.server.columns[i])
                 .setStyle(buttonStyle);
 
             buttons.push(button);
@@ -49,6 +50,7 @@ export class CommandQaformat implements ICommand, IButtonUpdater {
     }
 
     updateConfig(interaction: ButtonInteraction<CacheType>) {
+        const user = this.data.users.get(interaction.user.id)!;
         const idSplit = interaction.customId.split("-");
         const rowType = idSplit[1];
         const index = parseInt(idSplit[2]);
@@ -56,16 +58,16 @@ export class CommandQaformat implements ICommand, IButtonUpdater {
         switch (rowType) {
             case "question":
                 if (on) {
-                    this.data.question.add(index);
+                    user.question.add(index);
                 } else {
-                    this.data.question.delete(index);
+                    user.question.delete(index);
                 }
                 break;
             case "answer":
                 if (on) {
-                    this.data.answer.add(index);
+                    user.answer.add(index);
                 } else {
-                    this.data.answer.delete(index);
+                    user.answer.delete(index);
                 }
                 break;
         }
