@@ -31,7 +31,7 @@ export class CommandReloadData implements ICommand {
         const workbook = XLSX.read(buf);
 
         var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
-        const arySheet = XLSX.utils.sheet_to_json(sheet1, { defval: "" });
+        const arySheet = XLSX.utils.sheet_to_json(sheet1, { defval: "", raw: false });
 
         let reply = "";
 
@@ -74,6 +74,7 @@ export class CommandReloadData implements ICommand {
             }
             if (this.data.currentCategories.size === 0) {
                 this.data.currentCategories = new Set(this.data.categories);
+                // TODO: call the row index builder from here
             }
         } else {
             reply += "If you want to filter the data, you need a column named Category. "

@@ -91,7 +91,11 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
 
     if (data.currentQuestion === -1) {
         // No question is currently selected, select one now
-        selectQuestionAndAnswers();
+        const madeQA = selectQuestionAndAnswers();
+        if (!madeQA) {
+            message.channel.send(`I failed to select a valid question and answers. Make sure to select enough categories so that there are at least 3 available rows to chose from`);
+            return;
+        }
     }
 
     // Output the question
@@ -108,8 +112,12 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         let answers = "";
         for (let i = 0; i < data.N_ANSWERS; i++) {
             for (let j = 0; j < data.columns.length; j++) {
+                const rowId = data.currentAnswers[i];
+                if (rowId === -1) {
+                    continue;
+                }
                 if (data.answer.has(j)) {
-                    answers += (i + 1) + " " + data.sheet[data.currentAnswers[i]][j] + "     ";
+                    answers += (i + 1) + " " + data.sheet[rowId][j] + "     ";
                 }
             }
         }
@@ -119,9 +127,20 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
 }
 
 
-function selectQuestionAndAnswers() {
+function selectQuestionAndAnswers(): boolean {
+    // Build a data subset based on selected categories.
+    // TODO: Extract this to a method and call it from two places:
+    // * CommandCategories.updateConfig
+    // * CommandReloadData.loadSheetFromResponse
+    let rowIdxs = new Array<number>();
+    for (let i = 0; i < data.sheet.length; i++) {
+        if (data.currentCategories.has(data.sheet[i][data.categoryColIdx])) {
+            rowIdxs.push(i)
+        }
+    }
+
     // Randomly choose a question
-    data.currentQuestion = Math.floor(Math.random() * data.sheet.length);
+    data.currentQuestion = rowIdxs[Math.floor(Math.random() * rowIdxs.length)];
 
     // reset the answers, get ready to assign
     data.currentAnswers.fill(-1);
@@ -133,23 +152,37 @@ function selectQuestionAndAnswers() {
     const answerSet = new Set<number>();
     answerSet.add(data.currentQuestion);
 
-    // Randomly choose n-1 more (incorrect) answers
-    while (answerSet.size < data.N_ANSWERS) {
-        answerSet.add(Math.floor(Math.random() * data.sheet.length)); // +1 to not select the header row
+    // Randomly choose n-1 more (incorrect) answers from the subset
+    let retries = 20; // in case there are fewer rows in a category than N_ANSWERS
+    while (answerSet.size < data.N_ANSWERS && retries > 0) {
+        answerSet.add(rowIdxs[Math.floor(Math.random() * rowIdxs.length)]); // +1 to not select the header row
+        retries--;
     }
 
     // Remove the answer that was blocking a random choice
     answerSet.delete(data.currentQuestion);
 
+    if (answerSet.size === 0) {
+        // Not enough answers, possibly due to underselected or underpopulated categories
+        // Roll everything back
+        data.currentQuestion = -1;
+        data.currentAnswers.fill(-1);
+        return false;
+    }
+
     // Iterate the answers, if still needs to be filled then fill it, otherwise skip over        
     const answerArray = Array.from(answerSet);
     for (let i = 0; i < data.N_ANSWERS; i++) {
+        if (answerArray.length === 0) {
+            // we've exhausted the answerSet, probably due to an under-populated category
+            break;
+        }
         if (data.currentAnswers[i] !== -1) {
             continue;
         }
         data.currentAnswers[i] = answerArray.shift()!;
     }
-
+    return true;
 }
 
 function processAnswer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
