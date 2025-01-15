@@ -46,7 +46,7 @@ client.on(Events.InteractionCreate, interaction => {
 });
 
 client.on(Events.MessageCreate, message => {
-    answer(message);
+    processAnswer(message);
     question(message);
 });
 
@@ -152,7 +152,7 @@ function selectQuestionAndAnswers() {
 
 }
 
-function answer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
+function processAnswer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     // don't reply to self
     if (message.author == client.user || message.author.bot) {
         return
