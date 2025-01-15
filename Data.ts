@@ -18,6 +18,7 @@ export class Data {
     // TODO: Move these into a data structure for servers
     sheet = new Array<Array<string>>();
     columns = new Array<string>();
+    categories = new Array<string>();
 
     // TODO: Move these into User so each can have their own formats
     question = new Set<number>();  // question format, which column(s) compose question
@@ -26,8 +27,10 @@ export class Data {
     pauseSeconds = this.DEFAULT_PAUSE_SECONDS;
     currentQuestion = -1; // number;
     currentAnswers = new Array<number>(this.N_ANSWERS); // the correct answer will have the same id as the question
+    currentCategories = new Set<string>();
 
     sheetUrl: string;
+    categoryColIdx = -1;
 
     constructor() {
         // // Question is the foreign language, answer is english
