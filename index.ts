@@ -37,26 +37,26 @@ client.once(Events.ClientReady, client => {
 
 });
 
-client.on(Events.InteractionCreate, interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     if (interaction.user == client.user || interaction.user.bot) {
         return
     }
-    checkMakeUserAndServer(interaction.guildId!, interaction.user.id);
+    await checkMakeUserAndServer(interaction.guildId!, interaction.user.id);
     processCommand(interaction);
 });
 
-client.on(Events.MessageCreate, message => {
+client.on(Events.MessageCreate, async message => {
     if (message.author == client.user || message.author.bot) {
         return
     }
-    checkMakeUserAndServer(message.guildId!, message.author.id);
+    await checkMakeUserAndServer(message.guildId!, message.author.id);
     processAnswer(message);
     question(message);
 });
 
 client.login(token);
 
-function checkMakeUserAndServer(serverId: ServerId, userId: UserId) {
+async function checkMakeUserAndServer(serverId: ServerId, userId: UserId): Promise<any> {
     if (data.users.has(userId)) {
         return;
     }
@@ -74,7 +74,7 @@ function checkMakeUserAndServer(serverId: ServerId, userId: UserId) {
     if (loadSheet) {
         // Server is new, load its sheet
         const interaction = { reply: () => { }, user: { id: userId } } as any;
-        commandLoadData.processCommand(interaction);
+        await commandLoadData.processCommand(interaction);
     }
 
     user.currentCategories = new Set(user.server.categories);

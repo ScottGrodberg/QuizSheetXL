@@ -17,16 +17,19 @@ export class CommandLoadData implements ICommand {
         return command;
     }
 
-    processCommand(interaction: ChatInputCommandInteraction): void {
+    async processCommand(interaction: ChatInputCommandInteraction): Promise<void> {
         const user = this.data.users.get(interaction.user.id)!;
-        request.get(user.server.sheetUrl, { encoding: null }, this.loadSheet.bind(this, interaction));
+        return fetch(user.server.sheetUrl).then(
+            async (value: Response) => {
+                await this.loadSheet(interaction, value);
+            },
+            (reason: any) => {
+                console.log(reason);
+            }
+        );
     }
 
     async loadSheet(interaction: ChatInputCommandInteraction, response: Response) {
-        // if (res || res.statusCode != 200) {
-        //     console.log(`Error getting sheet: ${res?.statusCode}`);
-        //     return;
-        // }
         const res = await response.text();
         const user = this.data.users.get(interaction.user.id)!;
         const buf = Buffer.from(res);
