@@ -5,7 +5,7 @@
 
 ## Usage
 1. Register the bot as a discord application https://discord.com/developers/applications
-2. Only bot role is necessary, specifically permissions to Commands and Messages
+2. When making an oauth2 invite, only the bot role is necessary, access to Commands and Messages
 3. Add your token and data sheet url to `config.json`
 4. Invite the bot to your server and channel
 
