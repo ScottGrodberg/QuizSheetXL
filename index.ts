@@ -38,11 +38,17 @@ client.once(Events.ClientReady, client => {
 });
 
 client.on(Events.InteractionCreate, interaction => {
+    if (interaction.user == client.user || interaction.user.bot) {
+        return
+    }
     checkMakeUserAndServer(interaction.guildId!, interaction.user.id);
     processCommand(interaction);
 });
 
 client.on(Events.MessageCreate, message => {
+    if (message.author == client.user || message.author.bot) {
+        return
+    }
     checkMakeUserAndServer(message.guildId!, message.author.id);
     processAnswer(message);
     question(message);
@@ -103,11 +109,6 @@ function processCommand(interaction: any) {
 }
 
 function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
-
-    // Don't reply to self
-    if (message.author == client.user || message.author?.bot) {
-        return
-    }
 
     const user = data.users.get(message.author.id)!;
 
@@ -197,10 +198,7 @@ function selectQuestionAndAnswers(user: User): boolean {
 }
 
 function processAnswer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
-    // don't reply to self
-    if (message.author == client.user || message.author.bot) {
-        return
-    }
+
     const user = data.users.get(message.author.id)!;
     const content = message.content;
     if (content.length !== 1) {
