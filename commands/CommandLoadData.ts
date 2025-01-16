@@ -2,7 +2,6 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Data } from "../Data";
 import { ICommand } from "./ICommand";
 
-const request = require("request");
 const XLSX = require("xlsx");
 
 export class CommandLoadData implements ICommand {
@@ -23,13 +22,14 @@ export class CommandLoadData implements ICommand {
         request.get(user.server.sheetUrl, { encoding: null }, this.loadSheet.bind(this, interaction));
     }
 
-    loadSheet(interaction: ChatInputCommandInteraction, err: any, res: any, data: any) {
-        if (err || res.statusCode != 200) {
-            console.log(`Error getting sheet: ${res?.statusCode}`);
-            return;
-        }
+    async loadSheet(interaction: ChatInputCommandInteraction, response: Response) {
+        // if (res || res.statusCode != 200) {
+        //     console.log(`Error getting sheet: ${res?.statusCode}`);
+        //     return;
+        // }
+        const res = await response.text();
         const user = this.data.users.get(interaction.user.id)!;
-        const buf = Buffer.from(data);
+        const buf = Buffer.from(res);
         const workbook = XLSX.read(buf);
 
         var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
