@@ -76,6 +76,10 @@ function checkMakeUserAndServer(serverId: ServerId, userId: UserId) {
         const interaction = { reply: () => { }, user: { id: userId } } as any;
         commandLoadData.processCommand(interaction);
     }
+
+    user.currentCategories = new Set(user.server.categories);
+    data.buildSheetSubset(userId);
+
 }
 
 function processCommand(interaction: any) {

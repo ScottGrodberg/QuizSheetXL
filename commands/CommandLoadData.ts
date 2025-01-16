@@ -74,10 +74,6 @@ export class CommandLoadData implements ICommand {
                 user.server.categories = user.server.categories.slice(0, Data.MAX_COLUMNS); // same as button limit
                 reply += `Only took the first ${Data.MAX_COLUMNS} categories`;
             }
-            if (user.currentCategories.size === 0) {
-                user.currentCategories = new Set(user.server.categories);
-                this.data.buildSheetSubset(interaction.user.id);
-            }
         } else {
             reply += "If you want to filter the data, you need a column named Category. "
         }
