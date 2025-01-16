@@ -76,12 +76,17 @@ async function checkMakeUserAndServer(serverId: ServerId, userId: UserId): Promi
         newUser = true;
     }
 
+    // Update the server in case the user moved
+    user.server = server;
+
     if (newServer) {
+        // Load the data sheet
         const interaction = { reply: () => { }, user: { id: userId } } as any;
         await commandLoadData.processCommand(interaction);
     }
 
     if (newUser) {
+        // Show all categories
         user.currentCategories = new Set(user.server.categories);
         data.buildSheetSubset(userId);
     }
