@@ -57,28 +57,34 @@ client.on(Events.MessageCreate, async message => {
 client.login(token);
 
 async function checkMakeUserAndServer(serverId: ServerId, userId: UserId): Promise<any> {
-    if (data.users.has(userId)) {
-        return;
-    }
 
-    let loadSheet = false;
+    // check and create server
+    let newServer = false;
     let server = data.servers.get(serverId);
     if (!server) {
         server = new Server(serverId);
         data.servers.set(server.serverId, server);
-        loadSheet = true;
+        newServer = true;
     }
-    const user = new User(userId, server);
-    data.users.set(user.userId, user);
 
-    if (loadSheet) {
-        // Server is new, load its sheet
+    // check and create user
+    let newUser = false;
+    let user = data.users.get(userId);
+    if (!user) {
+        user = new User(userId, server);
+        data.users.set(user.userId, user);
+        newUser = true;
+    }
+
+    if (newServer) {
         const interaction = { reply: () => { }, user: { id: userId } } as any;
         await commandLoadData.processCommand(interaction);
     }
 
-    user.currentCategories = new Set(user.server.categories);
-    data.buildSheetSubset(userId);
+    if (newUser) {
+        user.currentCategories = new Set(user.server.categories);
+        data.buildSheetSubset(userId);
+    }
 
 }
 
