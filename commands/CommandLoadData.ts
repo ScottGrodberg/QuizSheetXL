@@ -35,25 +35,45 @@ export class CommandLoadData implements ICommand {
         const htmlText = await response.text();
         const buf = Buffer.from(htmlText);
         const workbook = XLSX.read(buf);
-        user.server.sheets = [];
 
         const sheetNames = this.getSheetNames(htmlText);
+        if (sheetNames.length === 0) {
+            return;
+        }
+
+        user.server.sheets = [];
+        let reply = "";
         for (let i = 0; i < sheetNames.length; i++) {
+
             var wbSheet = workbook.Sheets[workbook.SheetNames[i]];
             const jsonSheet = XLSX.utils.sheet_to_json(wbSheet, { defval: "", raw: false });
+
             const sheet = new Sheet();
-            const reply = this.processSheet(jsonSheet, sheet);
-            console.log(reply);
-            interaction.reply(reply);
+            reply += this.processSheet(jsonSheet, sheet, sheetNames[i]);
+
             user.server.sheets.push(sheet);
         }
+
+        console.log(reply);
+        interaction.reply(reply);
+
     }
 
-    getSheetNames(htmlText: any): Array<string> {
-        return ["one"];
+    getSheetNames(htmlText: string): Array<string> {
+        const matches = [...htmlText.matchAll(/docs-sheet-tab-caption">([0-9A-Za-z_\s]+)</g)];
+        if (matches.length === 0) {
+            console.error(`Did not find any sheets`);
+            return [];
+        }
+        if (matches.some(m => m.length < 2)) {
+            console.error(`Did not find sheet name`);
+            return [];
+        }
+        const sheetNames = matches.map(m => m[1]);
+        return sheetNames;
     }
 
-    processSheet(jsonSheet: any, sheet: Sheet): string {
+    processSheet(jsonSheet: any, sheet: Sheet, sheetName: string): string {
 
         let reply = "";
 
@@ -74,9 +94,9 @@ export class CommandLoadData implements ICommand {
         }
         sheet.columns = columns;
         sheet.data = _sheet;
-        reply += `Imported ${jsonSheet.length} records. `;
+        reply += `Imported ${jsonSheet.length} records from sheet ${sheetName}.\n`;
         if (header.length > Data.MAX_COLUMNS) {
-            reply += `Only the leftmost ${Data.MAX_COLUMNS} columns were taken. `;
+            reply += `Only the leftmost ${Data.MAX_COLUMNS} columns were taken.\n`;
         }
 
         // Import categories
@@ -92,10 +112,10 @@ export class CommandLoadData implements ICommand {
             sheet.categoryColIdx = indexCategory;
             if (sheet.categories.length > Data.MAX_COLUMNS) {
                 sheet.categories = sheet.categories.slice(0, Data.MAX_COLUMNS); // same as button limit
-                reply += `Only took the first ${Data.MAX_COLUMNS} categories`;
+                reply += `Only took the first ${Data.MAX_COLUMNS} categories,\n`;
             }
         } else {
-            reply += "If you want to filter the data, you need a column named Category. "
+            reply += "If you want to filter the data, you need a column named Category.\n"
         }
 
         return reply;
