@@ -10,11 +10,14 @@ export class User {
 
     pauseSeconds = Data.DEFAULT_PAUSE_SECONDS;
 
-    currentQuestion = -1; // number;
-    currentAnswers = new Array<number>(Data.N_ANSWERS); // the correct answer will have the same id as the question
+    currentSheet = -1;
 
     currentCategories = new Set<string>();
     sheetSubsetRowIds = new Array<number>();
+
+    currentQuestion = -1; // number;
+    currentAnswers = new Array<number>(Data.N_ANSWERS); // the correct answer will have the same id as the question
+
 
     constructor(public userId: UserId, public server: Server) {
         // Totally random guess which columns to start wtih
@@ -23,14 +26,18 @@ export class User {
     }
 }
 
-export class Server {
-    sheetUrl: string;
+export class Sheet {
 
-    sheet = new Array<Array<string>>();
     columns = new Array<string>();
+    data = new Array<Array<string>>();
 
     categories = new Array<string>();
     categoryColIdx = -1;
+
+}
+export class Server {
+    sheetUrl: string;
+    sheets = new Array<Sheet>();
 
     constructor(public serverId: ServerId) {
         this.sheetUrl = sheetUrl;
@@ -47,12 +54,13 @@ export class Data {
 
     buildSheetSubset(userId: UserId) {
         const user = this.users.get(userId)!;
-        const server = user.server;
+        const sheet = user.server.sheets[user.currentSheet];
+        const data = sheet.data;
 
         // Build a list of row ids which are a subset of sheet based on selected categories.
         let rowIdxs = new Array<number>();
-        for (let i = 0; i < server.sheet.length; i++) {
-            if (user.currentCategories.has(server.sheet[i][server.categoryColIdx])) {
+        for (let i = 0; i < data.length; i++) {
+            if (user.currentCategories.has(data[i][sheet.categoryColIdx])) {
                 rowIdxs.push(i)
             }
         }

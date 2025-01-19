@@ -31,8 +31,9 @@ export class CommandCategory implements ICommand, IButtonUpdater {
     getCategoriesRow(rowType: string, userId: UserId): ActionRowBuilder<ButtonBuilder> {
         const user = this.data.users.get(userId)!;
         const buttons = new Array<ButtonBuilder>();
-        for (let i = 0; i < user.server.categories.length; i++) {
-            const category = user.server.categories[i];
+        const categories = user.server.sheets[user.currentSheet].categories;
+        for (let i = 0; i < categories.length; i++) {
+            const category = categories[i];
             const buttonStyle = user.currentCategories.has(category) ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${category}`)

@@ -32,11 +32,12 @@ export class CommandQaformat implements ICommand, IButtonUpdater {
 
     getQARow(set: Set<number>, rowType: string, user: User): ActionRowBuilder<ButtonBuilder> {
         const buttons = new Array<ButtonBuilder>();
-        for (let i = 0; i < user.server.columns.length; i++) {
+        const columns = user.server.sheets[user.currentSheet].columns;
+        for (let i = 0; i < columns.length; i++) {
             const buttonStyle = set.has(i) ? ButtonStyle.Primary : ButtonStyle.Secondary;
             const button = new ButtonBuilder()
                 .setCustomId(`button-${rowType}-${i}`)
-                .setLabel(user.server.columns[i])
+                .setLabel(columns[i])
                 .setStyle(buttonStyle);
 
             buttons.push(button);

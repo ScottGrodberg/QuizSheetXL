@@ -86,8 +86,9 @@ async function checkMakeUserAndServer(serverId: ServerId, userId: UserId): Promi
     }
 
     if (newUser) {
-        // Show all categories
-        user.currentCategories = new Set(user.server.categories);
+        // Select the first sheet and show all categories
+        user.currentSheet = 0;
+        user.currentCategories = new Set(user.server.sheets[0].categories);
         data.buildSheetSubset(userId);
     }
 
@@ -138,9 +139,10 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
 
     // Output the question
     let question = "";
-    for (let i = 0; i < user.server.columns.length; i++) {
+    const sheet = user.server.sheets[user.currentSheet];
+    for (let i = 0; i < sheet.columns.length; i++) {
         if (user.question.has(i)) {
-            question += user.server.sheet[user.currentQuestion][i] + " ";
+            question += sheet.data[user.currentQuestion][i] + " ";
         }
     }
     message.channel.send(`${question}`);
@@ -149,13 +151,13 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         // Pause, and then output the answers
         let answers = "";
         for (let i = 0; i < Data.N_ANSWERS; i++) {
-            for (let j = 0; j < user.server.columns.length; j++) {
+            for (let j = 0; j < sheet.columns.length; j++) {
                 const rowId = user.currentAnswers[i];
                 if (rowId === -1) {
                     continue;
                 }
                 if (user.answer.has(j)) {
-                    answers += (i + 1) + " " + user.server.sheet[rowId][j] + "     ";
+                    answers += (i + 1) + " " + sheet.data[rowId][j] + "     ";
                 }
             }
         }
@@ -224,7 +226,7 @@ function processAnswer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         return;
     }
     const index = parseInt(match[0]);
-    if (index < 1 || index > user.server.columns.length) {
+    if (index < 1 || index > user.server.sheets[user.currentSheet].columns.length) {
         return;
     }
     if (user.currentAnswers[index - 1] === user.currentQuestion) {
