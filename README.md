@@ -10,15 +10,19 @@
 4. Invite the bot to your server and channel
 
 ## Commands
-* `/category` lets you select which categories to study
 * `/sheet` tell the bot where your data sheet is
 * `/reload` reload the data sheet
-* `/pause` tell the bot how long to wait before showing the answers
+* `/category` lets you select which categories to study
 * `/qaformat` choose which columns to work with
+* `/pause` tell the bot how long to wait before showing the answers
 
 ## Notes on data sheet / import
 * Takes columns from the left, assumes the first two have data in all rows
 * Columns should be contiguous with no gaps between them
 * I don't think I need to say this but column headers should line up with column data
-* Due to a discord limitation on buttons, the import takes up to 5 columns
 * If you have any questions how this works, you can look at `CommandLoadData.ts` 
+
+## Limits
+* Discord button rows are limited to 5 buttons. Any command that uses buttons for its ui will be limited to 5 possible choices.
+* g sheets are limited to 100 rows each when gotten over http, which we do
+* This code does not support parsing multiple workbook sheets. Only the first sheet is taken
