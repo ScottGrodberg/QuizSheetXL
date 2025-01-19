@@ -48,8 +48,8 @@ export class CommandLoadData implements ICommand {
             var wbSheet = workbook.Sheets[workbook.SheetNames[i]];
             const jsonSheet = XLSX.utils.sheet_to_json(wbSheet, { defval: "", raw: false });
 
-            const sheet = new Sheet();
-            reply += this.processSheet(jsonSheet, sheet, sheetNames[i]);
+            const sheet = new Sheet(sheetNames[i]);
+            reply += this.processSheet(jsonSheet, sheet);
 
             user.server.sheets.push(sheet);
         }
@@ -73,7 +73,7 @@ export class CommandLoadData implements ICommand {
         return sheetNames;
     }
 
-    processSheet(jsonSheet: any, sheet: Sheet, sheetName: string): string {
+    processSheet(jsonSheet: any, sheet: Sheet): string {
 
         let reply = "";
 
@@ -94,7 +94,7 @@ export class CommandLoadData implements ICommand {
         }
         sheet.columns = columns;
         sheet.data = _sheet;
-        reply += `Imported ${jsonSheet.length} records from sheet ${sheetName}.\n`;
+        reply += `Imported ${jsonSheet.length} records from sheet ${sheet.sheetName}.\n`;
         if (header.length > Data.MAX_COLUMNS) {
             reply += `Only the leftmost ${Data.MAX_COLUMNS} columns were taken.\n`;
         }

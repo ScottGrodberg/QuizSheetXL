@@ -34,6 +34,8 @@ export class Sheet {
     categories = new Array<string>();
     categoryColIdx = -1;
 
+    constructor(public sheetName: string) { }
+
 }
 export class Server {
     sheetUrl: string;
