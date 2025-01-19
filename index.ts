@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits, Events, Message, OmitPartialGroupDMChannel, 
 import { Data, Server, ServerId, User, UserId } from "./Data";
 import { CommandLoadData } from "./commands/CommandLoadData";
 import { CommandQaformat } from "./commands/CommandQaformat";
-import { CommandSheet } from "./commands/CommandSheet";
+import { CommandUrl } from "./commands/CommandUrl";
 import { CommandPause } from "./commands/CommandPause";
 import { IButtonUpdater } from "./commands/IButtonUpdater";
 import { CommandCategory } from "./commands/CommandCategory";
@@ -15,13 +15,13 @@ const commandCategory = new CommandCategory(data);
 const commandQaformat = new CommandQaformat(data);
 const commandPause = new CommandPause(data);
 const commandLoadData = new CommandLoadData(data);
-const commandSheet = new CommandSheet(data, commandLoadData);
+const commandUrl = new CommandUrl(data, commandLoadData);
 const commands = [
     commandCategory,
     commandQaformat,
     commandPause,
     commandLoadData,
-    commandSheet
+    commandUrl
 ];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });

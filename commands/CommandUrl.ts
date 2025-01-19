@@ -4,8 +4,8 @@ import { ICommand } from "./ICommand";
 import { CommandLoadData } from "./CommandLoadData";
 
 
-export class CommandSheet implements ICommand {
-    public commandName = "sheet";
+export class CommandUrl implements ICommand {
+    public commandName = "url";
 
     constructor(public data: Data, public commandLoadData: CommandLoadData) { }
 
@@ -16,7 +16,7 @@ export class CommandSheet implements ICommand {
             .addStringOption(option =>
                 option
                     .setName('url')
-                    .setDescription('The url of the sheet')
+                    .setDescription('The url of the xlsx data file')
                     .setRequired(true)
             );
         return command;
