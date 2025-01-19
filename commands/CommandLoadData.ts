@@ -30,8 +30,9 @@ export class CommandLoadData implements ICommand {
     }
 
     async loadSheet(interaction: ChatInputCommandInteraction, response: Response) {
-        const res = await response.text();
         const user = this.data.users.get(interaction.user.id)!;
+
+        const res = await response.text();
         const buf = Buffer.from(res);
         const workbook = XLSX.read(buf);
 
