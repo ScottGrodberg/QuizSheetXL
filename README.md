@@ -17,7 +17,7 @@
 * `/qaformat` choose which columns to work with
 
 ## Notes on data sheet / import
-* Takes columns from the left
+* Takes columns from the left, assumes the first two have data in all rows
 * Columns should be contiguous with no gaps between them
 * I don't think I need to say this but column headers should line up with column data
 * Due to a discord limitation on buttons, the import takes up to 5 columns

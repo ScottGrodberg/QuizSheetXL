@@ -50,7 +50,7 @@ export class CommandLoadData implements ICommand {
         const sheet = new Array<Array<string>>();
         for (let i = 1; i < arySheet.length; i++) {
             const values = Object.values(arySheet[i]).slice(1, nCols + 1) as Array<string>;
-            if (values.every(v => v.length === 0)) {
+            if (values[0].trim().length === 0 || values[1].trim().length === 0) {
                 // empty row, don't import it
                 continue;
             }

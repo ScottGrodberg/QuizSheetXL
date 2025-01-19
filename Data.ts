@@ -17,8 +17,9 @@ export class User {
     sheetSubsetRowIds = new Array<number>();  // filtered on Category
 
     constructor(public userId: UserId, public server: Server) {
-        // Totally random guess which columns to start wtih
-        this.question.add(2);
+        // Start with the first two columns as the question and answer.
+        // These are the only two guaranteed by the import validation to not be empty
+        this.question.add(0);
         this.answer.add(1);
     }
 }
