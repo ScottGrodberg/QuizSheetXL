@@ -14,7 +14,7 @@ export class User {
     currentAnswers = new Array<number>(Data.N_ANSWERS); // the correct answer will have the same id as the question
 
     currentCategories = new Set<string>();
-    sheetSubsetRowIds = new Array<number>();
+    sheetSubsetRowIds = new Array<number>();  // filtered on Category
 
     constructor(public userId: UserId, public server: Server) {
         // Totally random guess which columns to start wtih

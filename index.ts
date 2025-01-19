@@ -131,7 +131,7 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         // No question is currently selected, select one now
         const madeQA = selectQuestionAndAnswers(user);
         if (!madeQA) {
-            message.channel.send(`I failed to select a valid question and answers. Make sure to select enough categories so that there are at least 3 available rows to chose from`);
+            message.channel.send(`I did not find a valid question and answers. Make sure to select enough categories so that there are at least 3 available rows to chose from`);
             return;
         }
     }
