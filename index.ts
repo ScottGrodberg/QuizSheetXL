@@ -149,13 +149,14 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         // Pause, and then output the answers
         let answers = "";
         for (let i = 0; i < Data.N_ANSWERS; i++) {
+            answers += `     ${(i + 1)}. `;
             for (let j = 0; j < user.server.columns.length; j++) {
                 const rowId = user.currentAnswers[i];
                 if (rowId === -1) {
                     continue;
                 }
                 if (user.answer.has(j)) {
-                    answers += (i + 1) + " " + user.server.sheet[rowId][j] + "     ";
+                    answers += user.server.sheet[rowId][j] + "  ";
                 }
             }
         }
