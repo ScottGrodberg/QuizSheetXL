@@ -17,6 +17,7 @@
 * `/pause` tell the bot how long to wait before showing the answers
 
 ## Notes on data sheet / import
+* The sheet must be publicly readable
 * Takes columns from the left, assumes the first two have data in all rows
 * Columns should be contiguous with no gaps between them
 * I don't think I need to say this but column headers should line up with column data

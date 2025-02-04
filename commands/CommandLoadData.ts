@@ -21,7 +21,10 @@ export class CommandLoadData implements ICommand {
         const user = this.data.users.get(interaction.user.id)!;
         return fetch(user.server.sheetUrl).then(
             async (value: Response) => {
-                await this.loadSheet(interaction, value);
+                await this.loadSheet(interaction, value).then(reply => {
+                    console.log(reply);
+                    interaction.reply(reply);
+                })
             },
             (reason: any) => {
                 console.log(reason);
@@ -29,17 +32,26 @@ export class CommandLoadData implements ICommand {
         );
     }
 
-    async loadSheet(interaction: ChatInputCommandInteraction, response: Response) {
+    async loadSheet(interaction: ChatInputCommandInteraction, response: Response): Promise<string> {
+
+        let reply = "";
+
         const user = this.data.users.get(interaction.user.id)!;
 
         const res = await response.text();
         const buf = Buffer.from(res);
-        const workbook = XLSX.read(buf);
+
+        let workbook;
+        try {
+            workbook = XLSX.read(buf);
+        } catch (ex) {
+            console.error(ex);
+            reply += `Problem reading the sheet. Is it public? See the detailed error logged from the server.`;
+            return reply;
+        }
 
         var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
         const arySheet = XLSX.utils.sheet_to_json(sheet1, { defval: "", raw: false });
-
-        let reply = "";
 
         // Determine columns existence from the header
         const header = Object.values(arySheet[0]).slice(1).filter((v: any) => v.length > 0);
@@ -82,7 +94,6 @@ export class CommandLoadData implements ICommand {
             reply += "If you want to filter the data, you need a column named Category. "
         }
 
-        console.log(reply);
-        interaction.reply(reply);
+        return reply;
     }
 }
