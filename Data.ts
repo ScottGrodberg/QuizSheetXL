@@ -50,14 +50,20 @@ export class Data {
         const user = this.users.get(userId)!;
         const server = user.server;
 
-        // Build a list of row ids which are a subset of sheet based on selected categories.
-        let rowIdxs = new Array<number>();
-        for (let i = 0; i < server.sheet.length; i++) {
-            if (user.currentCategories.has(server.sheet[i][server.categoryColIdx])) {
-                rowIdxs.push(i)
+        if (user.currentCategories.size === 0) {
+            // The subset includes all rows from sheet
+            user.sheetSubsetRowIds = server.sheet.map((_, i) => i);
+
+        } else {
+            // The subset includes selected categories from sheet
+            let rowIdxs = new Array<number>();
+            for (let i = 0; i < server.sheet.length; i++) {
+                if (user.currentCategories.has(server.sheet[i][server.categoryColIdx])) {
+                    rowIdxs.push(i)
+                }
             }
+            user.sheetSubsetRowIds = rowIdxs;
         }
-        user.sheetSubsetRowIds = rowIdxs;
     }
 
     rollbackQA(user: User) {
