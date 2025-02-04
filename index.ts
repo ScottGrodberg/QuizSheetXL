@@ -224,7 +224,7 @@ function processAnswer(message: OmitPartialGroupDMChannel<Message<boolean>>) {
         return;
     }
     const index = parseInt(match[0]);
-    if (index < 1 || index > user.server.columns.length) {
+    if (index < 1 || index > user.currentAnswers.length) {
         return;
     }
     if (user.currentAnswers[index - 1] === user.currentQuestion) {
