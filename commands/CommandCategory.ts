@@ -16,10 +16,17 @@ export class CommandCategory implements ICommand, IButtonUpdater {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
-        interaction.reply({
-            content: `Select/deselect one or more categories`,
-            components: this.getConfigComponents(interaction.user.id)
-        });
+        const _components = this.getConfigComponents(interaction.user.id);
+
+        if (_components.length === 1 && _components[0].components.length === 0) {
+            interaction.reply(`No categories found`);
+
+        } else {
+            interaction.reply({
+                content: `Select/deselect one or more categories`,
+                components: _components
+            });
+        }
     }
 
     getConfigComponents(userId: UserId): Array<ActionRowBuilder<ButtonBuilder>> {

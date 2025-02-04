@@ -75,10 +75,14 @@ export class CommandLoadData implements ICommand {
             reply += `Only the leftmost ${Data.MAX_COLUMNS} columns were taken. `;
         }
 
-        // Import categories
-        const categories = new Set<string>();
+        // Reset the server's categories
+        user.server.categories = new Array<string>();
+        user.server.categoryColIdx = -1;
+
         const indexCategory = columns.findIndex(column => column === "Category")
         if (indexCategory > -1) {
+            // Build up the server's categories
+            const categories = new Set<string>();
             for (let i = 0; i < sheet.length; i++) {
                 if (sheet[i][indexCategory].length > 0) {
                     categories.add(sheet[i][indexCategory]);
