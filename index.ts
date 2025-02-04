@@ -139,7 +139,7 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     // Output the question
     let question = "";
     for (let i = 0; i < user.server.columns.length; i++) {
-        if (user.question.has(i)) {
+        if (user.qColumns.has(i)) {
             question += user.server.sheet[user.currentQuestion][i] + " ";
         }
     }
@@ -155,7 +155,7 @@ function question(message: OmitPartialGroupDMChannel<Message<boolean>>) {
                 if (rowId === -1) {
                     continue;
                 }
-                if (user.answer.has(j)) {
+                if (user.aColumns.has(j)) {
                     answers += user.server.sheet[rowId][j] + "  ";
                 }
             }

@@ -5,8 +5,8 @@ export type ServerId = string;
 export type ChannelId = string;
 
 export class User {
-    question = new Set<number>();  // question format, which column(s) compose question
-    answer = new Set<number>(); // answer format, which columns(s) to compose answers
+    qColumns = new Set<number>();  // question format, which column(s) compose question
+    aColumns = new Set<number>(); // answer format, which columns(s) to compose answers
 
     pauseSeconds = Data.DEFAULT_PAUSE_SECONDS;
 
@@ -19,8 +19,8 @@ export class User {
     constructor(public userId: UserId, public server: Server) {
         // Start with the first two columns as the question and answer.
         // These are the only two guaranteed by the import validation to not be empty
-        this.question.add(0);
-        this.answer.add(1);
+        this.qColumns.add(0);
+        this.aColumns.add(1);
     }
 }
 

@@ -25,8 +25,8 @@ export class CommandQaformat implements ICommand, IButtonUpdater {
     getConfigComponents(userId: UserId): Array<ActionRowBuilder<ButtonBuilder>> {
         const user = this.data.users.get(userId)!;
         return [
-            this.getQARow(user.question, "question", user),
-            this.getQARow(user.answer, "answer", user)
+            this.getQARow(user.qColumns, "question", user),
+            this.getQARow(user.aColumns, "answer", user)
         ]
     }
 
@@ -58,16 +58,16 @@ export class CommandQaformat implements ICommand, IButtonUpdater {
         switch (rowType) {
             case "question":
                 if (on) {
-                    user.question.add(index);
+                    user.qColumns.add(index);
                 } else {
-                    user.question.delete(index);
+                    user.qColumns.delete(index);
                 }
                 break;
             case "answer":
                 if (on) {
-                    user.answer.add(index);
+                    user.aColumns.add(index);
                 } else {
-                    user.answer.delete(index);
+                    user.aColumns.delete(index);
                 }
                 break;
         }
