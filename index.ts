@@ -194,7 +194,7 @@ function selectQuestionAndAnswers(user: User): boolean {
     if (answerSet.size === 0) {
         // Not enough answers, possibly due to underselected or underpopulated categories
         // Roll everything back
-        data.rollback(user);
+        data.rollbackQA(user);
         return false;
     }
 
