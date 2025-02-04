@@ -64,4 +64,9 @@ export class Data {
         user.currentQuestion = -1;
         user.currentAnswers.fill(-1);
     }
+
+    setCategoriesToAll(user: User) {
+        user.currentCategories = new Set(user.server.categories);
+        this.buildSheetSubset(user.userId);
+    }
 }

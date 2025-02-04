@@ -87,8 +87,7 @@ async function checkMakeUserAndServer(serverId: ServerId, userId: UserId): Promi
 
     if (newUser) {
         // Show all categories
-        user.currentCategories = new Set(user.server.categories);
-        data.buildSheetSubset(userId);
+        data.setCategoriesToAll(user);
     }
 
 }
