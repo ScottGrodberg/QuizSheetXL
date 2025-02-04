@@ -27,7 +27,7 @@ export class CommandLoadData implements ICommand {
                 })
             },
             (reason: any) => {
-                console.log(reason);
+                console.error(reason);
             }
         );
     }
